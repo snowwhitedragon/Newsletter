@@ -1,11 +1,14 @@
 .app-container {
-    display: flex;
-    flex-direction: column;
+    .navbar {        
+        padding: 20px;
+        margin-bottom: 20px;
 
-    .menu-header {
-        display: grid;
-        grid-template-columns: 1fr auto auto;
-        gap: 10px;
-        padding: 10px;
+        button {
+            margin-left: 10px;
+        }
     }
+}
+
+.linkactive {
+    box-shadow: 0 0 1px 2px inset #b02a37;
 }

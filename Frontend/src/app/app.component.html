@@ -1,10 +1,14 @@
 <div class="app-container">
-  <div class="menu-header">
-    <div></div>
-    <button class="btn btn-danger" routerLink="/login" routerLinkActive="active" ariaCurrentWhenActive="page">Einloggen</button>
-    <button class="btn" routerLink="/register" routerLinkActive="active" ariaCurrentWhenActive="page">Registrieren</button>
-  </div>
-  <div class="main">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <h2 class="text-danger">NENTINDO</h2>
+    <div class="me-auto">
+    </div>
+    <div>
+      <button class="btn btn-danger" routerLink="/login" routerLinkActive="linkactive" ariaCurrentWhenActive="page">Einloggen</button>
+      <button class="btn btn-outline-danger" routerLink="/register" routerLinkActive="linkactive" ariaCurrentWhenActive="page">Registrieren</button>
+    </div>
+  </nav>
+  <div class="container d-block justify-content-center align-items-center" style="height: 100%;">
     <router-outlet />
   </div>
 </div>
