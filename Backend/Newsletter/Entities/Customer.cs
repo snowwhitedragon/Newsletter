@@ -1,11 +1,16 @@
-﻿namespace Newsletter.Entities {
-    public class Customer {
-        public int Id { get; set; }
+﻿using System;
+using System.Collections.Generic;
 
-        public string? ReadableId { get; set; }
+// auto-generated
+namespace Newsletter.Entities;
 
-        public int ContactId { get; set; }
+public partial class Customer
+{
+    public int Id { get; set; }
 
-        public virtual Contact Contact { get; set; } = null!;
-    }
+    public string? ReadableId { get; set; }
+
+    public int ContactId { get; set; }
+
+    public virtual Contact Contact { get; set; } = null!;
 }

@@ -26,8 +26,8 @@ namespace Newsletter.Services {
             return response;
         }
 
-        public async Task<Response<User>> RegisterAsync(RegistrationData data) {
-            var response = new Response<User>();
+        public async Task<Response<bool>> RegisterAsync(RegistrationData data) {
+            var response = new Response<bool>();
 
             try {
                 var existingUser = _context.Users.SingleOrDefault(u => u.Username == data.Username);
@@ -38,7 +38,7 @@ namespace Newsletter.Services {
 
                 var newUser = new User {
                     Username = data.Username,
-                    RegistratedAt = DateTime.UtcNow,
+                    RegistratedAt = DateTime.Now,
                 };
 
                 newUser.PasswordHash = this._passwordHasher.HashPassword(newUser, data.Password);
@@ -46,7 +46,7 @@ namespace Newsletter.Services {
 
                 _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
-                response.Result = newUser;
+                response.Result = true;
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -54,8 +54,8 @@ namespace Newsletter.Services {
             return response;
         }
 
-        public async Task<Response<bool>> VerifyAsync(LoginData data) {
-            var response = new Response<bool>();
+        public async Task<Response<User>> VerifyAsync(LoginData data) {
+            var response = new Response<User>();
 
             var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == data.Username);
             if (user == null) {
@@ -63,11 +63,13 @@ namespace Newsletter.Services {
                 return response;
             }
 
-            response.Result = this.ValidatePassword(user, data.Password);
-            if (!response.Result) {
+            bool isValid = this.ValidatePassword(user, data.Password);
+            if (!isValid) {
                 response.AddError("Ungültiger Benutzername oder Passwort.");
+                return response;
             }
 
+            response.Result = user;
             return response;
         }
 

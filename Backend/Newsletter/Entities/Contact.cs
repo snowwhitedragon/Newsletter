@@ -1,28 +1,32 @@
-﻿namespace Newsletter.Entities {
+﻿using System;
+using System.Collections.Generic;
 
-    public class Contact {
-        public int Id { get; set; }
+// auto-generated
+namespace Newsletter.Entities;
 
-        public string ReadableId { get; set; } = null!;
+public partial class Contact
+{
+    public int Id { get; set; }
 
-        public string Salutation { get; set; } = null!;
+    public string ReadableId { get; set; } = null!;
 
-        public string FirstName { get; set; } = null!;
+    public string Salutation { get; set; } = null!;
 
-        public string LastName { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
 
-        public string Email { get; set; } = null!;
+    public string LastName { get; set; } = null!;
 
-        public string Country { get; set; } = null!;
+    public string Email { get; set; } = null!;
 
-        public string LanguageCode { get; set; } = null!;
+    public string Country { get; set; } = null!;
 
-        public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
+    public string LanguageCode { get; set; } = null!;
 
-        public virtual ICollection<Newsletter> Newsletters { get; set; } = new List<Newsletter>();
+    public virtual ICollection<Customer> Customers { get; set; } = new List<Customer>();
 
-        public virtual ICollection<Subcontractor> Subcontractors { get; set; } = new List<Subcontractor>();
+    public virtual ICollection<Newsletter> Newsletters { get; set; } = new List<Newsletter>();
 
-        public virtual ICollection<Supplier> Suppliers { get; set; } = new List<Supplier>();
-    }
+    public virtual ICollection<Subcontractor> Subcontractors { get; set; } = new List<Subcontractor>();
+
+    public virtual ICollection<Supplier> Suppliers { get; set; } = new List<Supplier>();
 }

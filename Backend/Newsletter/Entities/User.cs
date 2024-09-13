@@ -1,19 +1,28 @@
-﻿namespace Newsletter.Entities {
-    public class User {
-        public int Id { get; set; }
+﻿using System;
+using System.Collections.Generic;
 
-        public string Username { get; set; } = null!;
+// auto-generated
+namespace Newsletter.Entities;
 
-        public string PasswordHash { get; set; } = null!;
+public partial class User
+{
+    public int Id { get; set; }
 
-        public string DisplayName { get; set; } = null!;
+    public string Username { get; set; } = null!;
 
-        public int? OrganizationId { get; set; }
+    public string PasswordHash { get; set; } = null!;
 
-        public DateTime RegistratedAt { get; set; }
+    public string DisplayName { get; set; } = null!;
 
-        public virtual Organization? Organization { get; set; }
+    public int? OrganizationId { get; set; }
 
-        public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
-    }
+    public DateTime RegistratedAt { get; set; }
+
+    public virtual ICollection<Article> ArticleCreatedBies { get; set; } = new List<Article>();
+
+    public virtual ICollection<Article> ArticlePublishedBies { get; set; } = new List<Article>();
+
+    public virtual Organization? Organization { get; set; }
+
+    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }

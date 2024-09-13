@@ -1,16 +1,20 @@
-﻿namespace Newsletter.Entities {
+﻿using System;
+using System.Collections.Generic;
 
-    public class Organization {
-        public int Id { get; set; }
+// auto-generated
+namespace Newsletter.Entities;
 
-        public string Title { get; set; } = null!;
+public partial class Organization
+{
+    public int Id { get; set; }
 
-        public int ResponsibilityType { get; set; }
+    public string Title { get; set; } = null!;
 
-        public string? Description { get; set; }
+    public int ResponsibilityType { get; set; }
 
-        public virtual ICollection<User> Users { get; set; } = new List<User>();
+    public string? Description { get; set; }
 
-        public virtual ICollection<Newsletter> Newsletters { get; set; } = new List<Newsletter>();
-    }
+    public virtual ICollection<User> Users { get; set; } = new List<User>();
+
+    public virtual ICollection<Newsletter> Newsletters { get; set; } = new List<Newsletter>();
 }
