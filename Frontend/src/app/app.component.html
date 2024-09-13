@@ -1,7 +1,10 @@
-<div>
-  <div>
-    <a routerLink="login">Einloggen</a>
-    <a routerLink="register">Registrieren</a>
+<div class="app-container">
+  <div class="menu-header">
+    <div></div>
+    <button class="btn btn-danger" routerLink="/login">Einloggen</button>
+    <button class="btn" routerLink="/register">Registrieren</button>
   </div>
-  <router-outlet></router-outlet>
+  <div class="main">
+    <router-outlet />
+  </div>
 </div>
