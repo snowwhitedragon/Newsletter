@@ -7,11 +7,13 @@ using Newsletter.Services.Contracts;
 using Newsletter.Services;
 using Newsletter;
 using Microsoft.OpenApi.Models;
+using System.Security.Claims;
+using Newsletter.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 internal class Program {
     private static void Main(string[] args) {
         var builder = WebApplication.CreateBuilder(args);
-
         // Add services to the container.
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         .AddJwtBearer(options => {
@@ -22,7 +24,8 @@ internal class Program {
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = builder.Configuration["Jwt:Issuer"],
                 ValidAudience = builder.Configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+                RoleClaimType = ClaimTypes.Role
             };
         });
 
@@ -31,12 +34,19 @@ internal class Program {
         // Register DbContext
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+        builder.Services.AddHttpContextAccessor();
 
+        // Services
         builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-        builder.Services.AddScoped<IRolesService, RoleService>();
+        builder.Services.AddScoped<IRoleService, RoleService>();
         builder.Services.AddScoped<IArticleService, ArticleService>();
+        builder.Services.AddScoped<IMailService, MailService>();
+        builder.Services.AddScoped<IContactService, ContactService>();
+        builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
         builder.Services.AddScoped<JwtTokenService>();
 
+        builder.Services.AddCors();
         builder.Services.AddControllers();
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -59,7 +69,7 @@ internal class Program {
         app.UseRouting();
 
         app.UseAuthorization();
-
+        app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
         app.MapControllers();
 
         app.Run();

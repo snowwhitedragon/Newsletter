@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.IdentityModel.Tokens.Jwt;
+using Microsoft.EntityFrameworkCore;
 using Newsletter.Data;
 using Newsletter.Data.SearchRequests;
 using Newsletter.Entities;
@@ -8,16 +9,19 @@ using Newsletter.Services.Contracts;
 namespace Newsletter {
     public class ArticleService : IArticleService {
         private readonly AppDbContext _context;
+        private readonly Guid _userId;
 
-        public ArticleService(AppDbContext context) {
+        public ArticleService(AppDbContext context, IHttpContextAccessor httpContext) {
             this._context = context;
+            Guid.TryParse(httpContext.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value, out this._userId);
         }
 
         public async Task<Response<Article>> CreateAsync(Article newEntry) {
             var response = new Response<Article>();
             try {
+                var currentUser = 
                 newEntry.CreatedAt = DateTime.Now;
-                newEntry.CreatedById = 0; // TODO Userscope
+                newEntry.CreatedById = this._userId;
                 this._context.Articles.Add(newEntry);
                 await _context.SaveChangesAsync();
             } catch (Exception ex) {
@@ -27,7 +31,7 @@ namespace Newsletter {
             return response;
         }
 
-        public async Task<Response<bool>> DeleteAsync(int id) {
+        public async Task<Response<bool>> DeleteAsync(Guid id) {
             var response = new Response<bool>();
             try {
                 var entry = await this._context.Articles.FirstOrDefaultAsync(a => a.Id == id);
@@ -52,10 +56,13 @@ namespace Newsletter {
             return response;
         }
 
-        public async Task<Response<Article>> GetByIdAsync(int id) {
+        public async Task<Response<Article>> GetByIdAsync(Guid id) {
             var response = new Response<Article>();
             try {
-                var article = await this._context.Articles.FirstOrDefaultAsync(x => x.Id == id);
+                var article = await this._context.Articles
+                    .Include(x => x.Newsletter.Contacts)
+                    .Include(x => x.PublishedBy)
+                    .FirstOrDefaultAsync(x => x.Id == id);
 
                 if (article == null) {
                     response.AddError("Artikel wurde nicht gefunden.");
@@ -70,7 +77,7 @@ namespace Newsletter {
             return response;
         }
 
-        public async Task<Response<Article>> PublishAsync(int id) {
+        public async Task<Response<Article>> PublishAsync(Guid id) {
             var response = new Response<Article>();
             try {
                 var original = await this._context.Articles.FirstOrDefaultAsync(y => y.Id == id);
@@ -81,10 +88,9 @@ namespace Newsletter {
 
                 original.Published = true;
                 original.PublishedAt = DateTime.Now;
-                original.PublishedById = 0; // TODO Userscope
+                original.PublishedById = this._userId;
                 await this._context.SaveChangesAsync();
                 response.Result = original;
-                // TODO SEND MAILS
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -116,6 +122,10 @@ namespace Newsletter {
 
                 if (searchRequest.CreatedById.HasValue) {
                     query = query.Where(x => x.CreatedById == searchRequest.CreatedById.Value);
+                }
+
+                if (searchRequest.Published.HasValue) {
+                    query = query.Where(x => x.Published == searchRequest.Published.Value);
                 }
 
                 response.Result = await query.OrderByDescending(x => x.CreatedAt).ToListAsync();

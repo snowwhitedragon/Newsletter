@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[SubcontractorContacts]
 (
-	[SubcontractorId] INT NOT NULL FOREIGN KEY REFERENCES [Subcontractors](Id) ON DELETE CASCADE,
-	[ContactId] INT NOT NULL FOREIGN KEY REFERENCES [Contacts](Id) ON DELETE CASCADE,
+	[SubcontractorId] UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES [Subcontractors](Id) ON DELETE CASCADE,
+	[ContactId] UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES [Contacts](Id) ON DELETE CASCADE,
     PRIMARY KEY ([SubcontractorId], [ContactId]), 
 )
 

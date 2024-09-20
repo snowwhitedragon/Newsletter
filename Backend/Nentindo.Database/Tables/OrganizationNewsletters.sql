@@ -1,7 +1,7 @@
 ﻿CREATE TABLE [dbo].[OrganizationNewsletters]
 (
-	[OrganizationId] INT NOT NULL FOREIGN KEY REFERENCES [Organizations](Id) ON DELETE CASCADE,
-	[NewsletterId] INT NOT NULL FOREIGN KEY REFERENCES [Newsletters](Id) ON DELETE CASCADE,
+	[OrganizationId] UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES [Organizations](Id) ON DELETE CASCADE,
+	[NewsletterId] UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES [Newsletters](Id) ON DELETE CASCADE,
     PRIMARY KEY ([OrganizationId], [NewsletterId]), 
 )
 

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// auto-generated
 namespace Newsletter.Entities;
 
 public partial class Organization
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public string Title { get; set; } = null!;
 

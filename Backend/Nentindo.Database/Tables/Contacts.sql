@@ -1,14 +1,22 @@
 ﻿CREATE TABLE [dbo].[Contacts]
 (
-	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY DEFAULT NEWID(),
     [ReadableId] NVARCHAR(15) NOT NULL,
     [Salutation] NVARCHAR(10) NOT NULL,
     [FirstName] NVARCHAR(100) NOT NULL,
     [LastName] NVARCHAR(100) NOT NULL,
     [Email] NVARCHAR(100) NOT NULL,
-    [Country] NVARCHAR(100) NOT NULL DEFAULT('Deutschland'),
-    [LanguageCode] NVARCHAR(5) NOT NULL DEFAULT('de')
+    [StateId] UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES [States](Id),
+    [LanguageId] UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES [States](Id),
 )
+
+GO
+
+CREATE INDEX [IX_Contact_State] ON [dbo].[Contacts]([StateId])
+
+GO
+
+CREATE INDEX [IX_Contacts_Language] ON [dbo].[Contacts]([LanguageId])
 
 GO
 

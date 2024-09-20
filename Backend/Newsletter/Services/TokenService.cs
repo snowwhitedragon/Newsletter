@@ -12,13 +12,15 @@ namespace Newsletter.Services {
             this._config = config;
         }
 
-        public string GenerateToken(User user, List<string> roles) {
+        public string GenerateToken(Guid userId, string userName, List<string> roles) {
             var claims = new List<Claim>() {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, userName)
             };
 
-            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            roles.ForEach(role => {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            });
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this._config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -27,7 +29,7 @@ namespace Newsletter.Services {
                 issuer: this._config["Jwt:Issuer"],
                 audience: this._config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(60),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);

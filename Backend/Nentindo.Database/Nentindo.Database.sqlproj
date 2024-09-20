@@ -74,6 +74,7 @@
     <Build Include="Tables\SupplierContacts.sql" />
     <Build Include="Tables\SubcontractorContacts.sql" />
     <Build Include="Tables\Subscriptions.sql" />
+    <Build Include="Tables\States.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scripts\2024-09-13-import.sql" />

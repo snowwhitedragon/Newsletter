@@ -14,35 +14,25 @@ namespace Newsletter.Services {
             this._passwordHasher = new PasswordHasher<User>();
         }
 
-        public async Task<Response<IEnumerable<Role>>> GetUserRolesAsync(int id) {
-            var response = new Response<IEnumerable<Role>>();
-            var user = await this._context.Users.Include(u => u.Roles).FirstOrDefaultAsync(u => u.Id == id);
-            if (user == null) {
-                response.AddError("Benutzer nicht gefunden.");
-                return response;
-            }
-
-            response.Result = user.Roles.AsEnumerable();
-            return response;
-        }
-
         public async Task<Response<bool>> RegisterAsync(RegistrationData data) {
             var response = new Response<bool>();
 
             try {
-                var existingUser = _context.Users.SingleOrDefault(u => u.Username == data.Username);
+                var existingUser = _context.Users.FirstOrDefaultAsync(u => u.Username == data.Username);
                 if (existingUser != null) {
-                    response.AddError("Benutzername ist bereits vergeben.");
+                    response.AddError("Benutzername ist bereits vergeben");
                     return response;
                 }
 
                 var newUser = new User {
                     Username = data.Username,
+                    DisplayName = data.DisplayName,
                     RegistratedAt = DateTime.Now,
+                    OrganizationId = data.OrganizationId
                 };
 
                 newUser.PasswordHash = this._passwordHasher.HashPassword(newUser, data.Password);
-                newUser.Roles = await this._context.Roles.Where(x => x.Code == "GUEST").ToListAsync();
+                newUser.Roles = await this._context.Roles.Where(x => data.Roles.Contains(x.Id)).ToListAsync();
 
                 _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
@@ -56,20 +46,24 @@ namespace Newsletter.Services {
 
         public async Task<Response<User>> VerifyAsync(LoginData data) {
             var response = new Response<User>();
+            try {
+                var user = await _context.Users.Include(u => u.Roles).SingleOrDefaultAsync(u => u.Username == data.Username);
+                if (user == null) {
+                    response.AddError("Ungültiger Benutzername oder Passwort");
+                    return response;
+                }
 
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Username == data.Username);
-            if (user == null) {
-                response.AddError("Ungültiger Benutzername oder Passwort.");
-                return response;
+                bool isValid = this.ValidatePassword(user, data.Password);
+                if (!isValid) {
+                    response.AddError("Ungültiger Benutzername oder Passwort");
+                    return response;
+                }
+
+                response.Result = user;
+            } catch (Exception ex) {
+                response.AddError(ex.Message);
             }
 
-            bool isValid = this.ValidatePassword(user, data.Password);
-            if (!isValid) {
-                response.AddError("Ungültiger Benutzername oder Passwort.");
-                return response;
-            }
-
-            response.Result = user;
             return response;
         }
 

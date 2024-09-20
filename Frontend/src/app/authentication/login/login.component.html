@@ -1,15 +1,18 @@
 <div class="container" style="max-width: 700px;">
     <h2>Anmeldung</h2>
     <label class="mb-3 ">Bitte melden Sie sich mit Ihren Daten an:</label>
-    <div class="mb-3">
-        <label for="user" class="form-label">Benutzername</label>
-        <input type="text" class="form-control" id="user" placeholder="m.mustermann">
-    </div>
-    <div class="mb-3">
-        <label for="pw" class="form-label">Passwort</label>
-        <input type="password" class="form-control" id="pw" placeholder="************">
-    </div>
-    <div class="d-grid">
-        <button class="btn btn-block btn-danger">Bestätigen</button>
-    </div>
+    <app-error-display [hasError]="hasError" [error]="error"></app-error-display>
+    <form #form="ngForm" (ngSubmit)="login()">
+        <div class="mb-3">
+            <label for="user" class="form-label">Benutzername</label>
+            <input type="text" class="form-control" id="user" placeholder="m.mustermann" [(ngModel)]="loginData.userName" required name="user">
+        </div>
+        <div class="mb-3">
+            <label for="pw" class="form-label">Passwort</label>
+            <input type="password" class="form-control" id="pw" placeholder="************" [(ngModel)]="loginData.password" required name="pw">
+        </div>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-block btn-danger" >Bestätigen</button>
+        </div>
+    </form>
 </div>

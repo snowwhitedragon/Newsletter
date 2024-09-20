@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Newsletter.Entities;
 
-// auto-generated
 namespace Newsletter.Entities.Data;
 
 public partial class AppDbContext : DbContext
@@ -29,6 +28,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Role> Roles { get; set; }
 
+    public virtual DbSet<State> States { get; set; }
+
     public virtual DbSet<Subcontractor> Subcontractors { get; set; }
 
     public virtual DbSet<Supplier> Suppliers { get; set; }
@@ -39,7 +40,7 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.Entity<Article>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC077FA79C33");
+            entity.HasKey(e => e.Id).HasName("PK__Articles__3214EC07181A2C70");
 
             entity.HasIndex(e => e.CreatedById, "IX_Articles_Creator");
 
@@ -47,6 +48,7 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.PublishedById, "IX_Articles_Publisher");
 
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Link).HasMaxLength(255);
             entity.Property(e => e.Summary).HasMaxLength(255);
             entity.Property(e => e.Title).HasMaxLength(100);
@@ -54,48 +56,57 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.CreatedBy).WithMany(p => p.ArticleCreatedBies)
                 .HasForeignKey(d => d.CreatedById)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Articles__Create__151B244E");
+                .HasConstraintName("FK__Articles__Create__7FEAFD3E");
 
             entity.HasOne(d => d.Newsletter).WithMany(p => p.Articles)
                 .HasForeignKey(d => d.NewsletterId)
-                .HasConstraintName("FK__Articles__Newsle__0B91BA14");
+                .HasConstraintName("FK__Articles__Newsle__625A9A57");
 
             entity.HasOne(d => d.PublishedBy).WithMany(p => p.ArticlePublishedBies)
                 .HasForeignKey(d => d.PublishedById)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Articles__Publis__17036CC0");
+                .HasConstraintName("FK__Articles__Publis__00DF2177");
         });
 
         modelBuilder.Entity<Contact>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07380E33FB");
+            entity.HasKey(e => e.Id).HasName("PK__Contacts__3214EC07EE55F82D");
 
             entity.ToTable(tb => tb.HasTrigger("Trigger_GenerateReadable_ForContacts"));
 
-            entity.Property(e => e.Country)
-                .HasMaxLength(100)
-                .HasDefaultValue("Deutschland");
+            entity.HasIndex(e => e.StateId, "IX_Contact_State");
+
+            entity.HasIndex(e => e.LanguageId, "IX_Contacts_Language");
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.FirstName).HasMaxLength(100);
-            entity.Property(e => e.LanguageCode)
-                .HasMaxLength(5)
-                .HasDefaultValue("de");
             entity.Property(e => e.LastName).HasMaxLength(100);
             entity.Property(e => e.ReadableId).HasMaxLength(15);
             entity.Property(e => e.Salutation).HasMaxLength(10);
+
+            entity.HasOne(d => d.Language).WithMany(p => p.ContactLanguages)
+                .HasForeignKey(d => d.LanguageId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Contacts__Langua__7A3223E8");
+
+            entity.HasOne(d => d.State).WithMany(p => p.ContactStates)
+                .HasForeignKey(d => d.StateId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Contacts__StateI__7755B73D");
 
             entity.HasMany(d => d.Newsletters).WithMany(p => p.Contacts)
                 .UsingEntity<Dictionary<string, object>>(
                     "Subscription",
                     r => r.HasOne<Newsletter>().WithMany()
                         .HasForeignKey("NewsletterId")
-                        .HasConstraintName("FK__Subscript__Newsl__0A9D95DB"),
+                        .HasConstraintName("FK__Subscript__Newsl__69FBBC1F"),
                     l => l.HasOne<Contact>().WithMany()
                         .HasForeignKey("ContactId")
-                        .HasConstraintName("FK__Subscript__Conta__7A672E12"),
+                        .HasConstraintName("FK__Subscript__Conta__6AEFE058"),
                     j =>
                     {
-                        j.HasKey("ContactId", "NewsletterId").HasName("PK__Subscrip__9F2C3864DC0F7294");
+                        j.HasKey("ContactId", "NewsletterId").HasName("PK__Subscrip__9F2C3864C76C0BCE");
                         j.ToTable("Subscriptions");
                         j.HasIndex(new[] { "ContactId" }, "IX_Subscriptions_Contact");
                         j.HasIndex(new[] { "NewsletterId" }, "IX_Subscriptions_Newsletter");
@@ -104,34 +115,35 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC0792F85FB6");
+            entity.HasKey(e => e.Id).HasName("PK__Customer__3214EC077726D01B");
 
             entity.ToTable(tb => tb.HasTrigger("Trigger_GenerateReadable_ForCustomers"));
 
             entity.HasIndex(e => e.ContactId, "IX_Customers_Contact");
 
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.ReadableId).HasMaxLength(15);
 
             entity.HasOne(d => d.Contact).WithMany(p => p.Customers)
                 .HasForeignKey(d => d.ContactId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Customers__Conta__787EE5A0");
+                .HasConstraintName("FK__Customers__Conta__65370702");
         });
 
         modelBuilder.Entity<Newsletter>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC076536F42E");
+            entity.HasKey(e => e.Id).HasName("PK__Newslett__3214EC07399C52A4");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Title).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Organization>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07EC632FC1");
+            entity.HasKey(e => e.Id).HasName("PK__Organiza__3214EC070EC7FF12");
 
-            entity.Property(e => e.Id).ValueGeneratedNever();
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Description).HasMaxLength(255);
             entity.Property(e => e.Title).HasMaxLength(100);
 
@@ -140,13 +152,13 @@ public partial class AppDbContext : DbContext
                     "OrganizationNewsletter",
                     r => r.HasOne<Newsletter>().WithMany()
                         .HasForeignKey("NewsletterId")
-                        .HasConstraintName("FK__Organizat__Newsl__09A971A2"),
+                        .HasConstraintName("FK__Organizat__Newsl__671F4F74"),
                     l => l.HasOne<Organization>().WithMany()
                         .HasForeignKey("OrganizationId")
-                        .HasConstraintName("FK__Organizat__Organ__0C85DE4D"),
+                        .HasConstraintName("FK__Organizat__Organ__662B2B3B"),
                     j =>
                     {
-                        j.HasKey("OrganizationId", "NewsletterId").HasName("PK__Organiza__099116ED3D8C884F");
+                        j.HasKey("OrganizationId", "NewsletterId").HasName("PK__Organiza__099116EDF2063989");
                         j.ToTable("OrganizationNewsletters");
                         j.HasIndex(new[] { "NewsletterId" }, "IX_OrganizationNewsletters_Newsletter");
                         j.HasIndex(new[] { "OrganizationId" }, "IX_OrganizationNewsletters_Organization");
@@ -155,16 +167,32 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07B50329E2");
+            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC07336C1F07");
 
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Code).HasMaxLength(5);
+            entity.Property(e => e.Title).HasMaxLength(100);
+        });
+
+        modelBuilder.Entity<State>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__States__3214EC0785E078BD");
+
+            entity.HasIndex(e => e.Title, "UQ__States__2CB664DC2034B2EF").IsUnique();
+
+            entity.HasIndex(e => e.LanguageCode, "UQ__States__8B8C8A34392D791F").IsUnique();
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.Language).HasMaxLength(100);
+            entity.Property(e => e.LanguageCode).HasMaxLength(10);
             entity.Property(e => e.Title).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Subcontractor>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC0719877713");
+            entity.HasKey(e => e.Id).HasName("PK__Subcontr__3214EC0768BF9C51");
 
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CompanyName).HasMaxLength(100);
 
             entity.HasMany(d => d.Contacts).WithMany(p => p.Subcontractors)
@@ -172,13 +200,13 @@ public partial class AppDbContext : DbContext
                     "SubcontractorContact",
                     r => r.HasOne<Contact>().WithMany()
                         .HasForeignKey("ContactId")
-                        .HasConstraintName("FK__Subcontra__Conta__797309D9"),
+                        .HasConstraintName("FK__Subcontra__Conta__690797E6"),
                     l => l.HasOne<Subcontractor>().WithMany()
                         .HasForeignKey("SubcontractorId")
-                        .HasConstraintName("FK__Subcontra__Subco__01142BA1"),
+                        .HasConstraintName("FK__Subcontra__Subco__681373AD"),
                     j =>
                     {
-                        j.HasKey("SubcontractorId", "ContactId").HasName("PK__Subcontr__47CDD96A39EEEA55");
+                        j.HasKey("SubcontractorId", "ContactId").HasName("PK__Subcontr__47CDD96A4176EC5B");
                         j.ToTable("SubcontractorContacts");
                         j.HasIndex(new[] { "ContactId" }, "IX_SubcontractorContacts_Contact");
                         j.HasIndex(new[] { "SubcontractorId" }, "IX_SubcontractorContacts_Subcontractor");
@@ -187,8 +215,9 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<Supplier>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC079CA89C61");
+            entity.HasKey(e => e.Id).HasName("PK__Supplier__3214EC0767A70F8D");
 
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CompanyName).HasMaxLength(100);
 
             entity.HasMany(d => d.Contacts).WithMany(p => p.Suppliers)
@@ -196,13 +225,13 @@ public partial class AppDbContext : DbContext
                     "SupplierContact",
                     r => r.HasOne<Contact>().WithMany()
                         .HasForeignKey("ContactId")
-                        .HasConstraintName("FK__SupplierC__Conta__7B5B524B"),
+                        .HasConstraintName("FK__SupplierC__Conta__6CD828CA"),
                     l => l.HasOne<Supplier>().WithMany()
                         .HasForeignKey("SupplierId")
-                        .HasConstraintName("FK__SupplierC__Suppl__02084FDA"),
+                        .HasConstraintName("FK__SupplierC__Suppl__6BE40491"),
                     j =>
                     {
-                        j.HasKey("SupplierId", "ContactId").HasName("PK__Supplier__EE2004ED2928A683");
+                        j.HasKey("SupplierId", "ContactId").HasName("PK__Supplier__EE2004ED308C8D1D");
                         j.ToTable("SupplierContacts");
                         j.HasIndex(new[] { "ContactId" }, "IX_SupplierContacts_Contact");
                         j.HasIndex(new[] { "SupplierId" }, "IX_SupplierContacts_Supplier");
@@ -211,30 +240,39 @@ public partial class AppDbContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07595D0EFD");
+            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07DD65953D");
 
-            entity.HasIndex(e => e.Username, "UQ__tmp_ms_x__536C85E4B5605901").IsUnique();
+            entity.HasIndex(e => e.ContactId, "IX_Users_Contact");
 
+            entity.HasIndex(e => e.OrganizationId, "IX_Users_Organization");
+
+            entity.HasIndex(e => e.Username, "UQ__tmp_ms_x__536C85E4AB504FAA").IsUnique();
+
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
             entity.Property(e => e.DisplayName).HasMaxLength(200);
             entity.Property(e => e.RegistratedAt).HasDefaultValueSql("(getdate())");
             entity.Property(e => e.Username).HasMaxLength(50);
 
+            entity.HasOne(d => d.Contact).WithMany(p => p.Users)
+                .HasForeignKey(d => d.ContactId)
+                .HasConstraintName("FK__Users__ContactId__03BB8E22");
+
             entity.HasOne(d => d.Organization).WithMany(p => p.Users)
                 .HasForeignKey(d => d.OrganizationId)
-                .HasConstraintName("FK__Users__Organizat__1332DBDC");
+                .HasConstraintName("FK__Users__Organizat__02C769E9");
 
             entity.HasMany(d => d.Roles).WithMany(p => p.Users)
                 .UsingEntity<Dictionary<string, object>>(
                     "UserRole",
                     r => r.HasOne<Role>().WithMany()
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("FK__UserRoles__RoleI__00200768"),
+                        .HasConstraintName("FK__UserRoles__RoleI__6EC0713C"),
                     l => l.HasOne<User>().WithMany()
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK__UserRoles__UserI__123EB7A3"),
+                        .HasConstraintName("FK__UserRoles__UserI__01D345B0"),
                     j =>
                     {
-                        j.HasKey("UserId", "RoleId").HasName("PK__UserRole__AF2760AD1088615C");
+                        j.HasKey("UserId", "RoleId").HasName("PK__UserRole__AF2760AD2783AA04");
                         j.ToTable("UserRoles");
                         j.HasIndex(new[] { "RoleId" }, "IX_UserRoles_Role");
                         j.HasIndex(new[] { "UserId" }, "IX_UserRoles_User");
