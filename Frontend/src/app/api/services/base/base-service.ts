@@ -1,12 +1,13 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
+import { environment } from "../../../../environments/environment";
 
 @Injectable({
     providedIn: 'root'
 })
 export abstract class BaseService {
-    protected url = 'https://localhost:44383/api/';
+    protected url = environment.backend + 'api/';
 
     constructor(
         protected _httpClient: HttpClient) {
