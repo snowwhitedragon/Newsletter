@@ -1,1 +1,3 @@
-<h3>Neuigkeiten</h3>
+<div *ngIf="me$ | async as me">
+    <app-article-list [organizationId]="me.result?.organizationId"></app-article-list>
+</div>

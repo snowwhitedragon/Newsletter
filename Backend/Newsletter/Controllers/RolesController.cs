@@ -17,7 +17,7 @@ namespace Newsletter.Controllers {
         [HttpGet("user/{userId}/role/{roleId}")]
         public async Task<IActionResult> AssignRole(Guid userId, Guid roleId) {
             var result = await this._service.AssignRoleToUserAsync(userId, roleId);
-            return Ok(result);
+            return ReturnJsonResult(result);
         }
     }
 }

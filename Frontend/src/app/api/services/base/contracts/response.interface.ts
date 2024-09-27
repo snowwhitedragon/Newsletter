@@ -1,5 +1,5 @@
 export interface IResponse<T> {
-    result: T;
+    result?: T;
     errors: string[];
     isSuccess: boolean;
 }

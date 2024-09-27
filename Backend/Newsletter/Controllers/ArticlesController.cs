@@ -40,8 +40,8 @@ namespace Newsletter.Controllers {
                 var mailResponse = await this._mailService.SendNewsletterToSubscibersAsync(response.Result.Id);
                 mailResponse.Errors.ForEach(response.AddError);
             }
-            
-            return Ok(response);
+
+            return ReturnJsonResult(response);
         }
     }
 }

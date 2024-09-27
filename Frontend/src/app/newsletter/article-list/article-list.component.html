@@ -1,0 +1,7 @@
+<h3>Newsletter</h3>
+<button class="btn btn-danger"><i class="bi bi-plus"></i> Neuer Artikel</button>
+<div>
+    <div *ngForOf="let item in articles$ | async">
+        <app-article-list-item [article]="item"></app-article-list-item>
+    </div>
+</div>

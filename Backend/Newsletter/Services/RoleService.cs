@@ -54,6 +54,18 @@ namespace Newsletter.Services {
             return response;
         }
 
+        public async Task<Response<IEnumerable<Role>>> GetUserRolesAsync(Guid userId) {
+            var response = new Response<IEnumerable<Role>>();
+            try {
+                var roles = await this._context.Roles.Where(r => r.Users.Any(u => u.Id == userId)).ToListAsync();
+                response.Result = roles;
+            } catch (Exception ex) {
+                response.AddError(ex.Message);
+            }
+
+            return response;
+        }
+
         public async Task<Response<IEnumerable<Role>>> SearchAsync(SearchRequestBase searchRequest) {
             var response = new Response<IEnumerable<Role>>();
             try {

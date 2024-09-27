@@ -48,7 +48,12 @@ namespace Newsletter {
         public async Task<Response<Contact>> GetByIdAsync(Guid id) {
             var response = new Response<Contact>();
             try {
-                var entry = await this._context.Contacts.FirstOrDefaultAsync(x => x.Id == id);
+                var entry = await this._context.Contacts
+                    .Include(c => c.Customers)
+                    .Include(c => c.Subcontractors)
+                    .Include(c => c.Suppliers)
+                    .Include(c => c.Language)
+                    .Include(c => c.State).FirstOrDefaultAsync(x => x.Id == id);
 
                 if (entry == null) {
                     response.AddError("Kontakt wurde nicht gefunden.");
@@ -70,7 +75,6 @@ namespace Newsletter {
                     .Include(c => c.Customers)
                     .Include(c => c.Subcontractors)
                     .Include(c => c.Suppliers)
-                    .Include(c => c.Newsletters)
                     .Include(c => c.Language)
                     .Include(c => c.State)
                     .AsQueryable();
