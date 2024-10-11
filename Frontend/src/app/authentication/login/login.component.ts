@@ -1,5 +1,5 @@
 import { Component, OnDestroy } from '@angular/core';
-import { catchError, finalize, of, Subject, takeUntil, tap } from 'rxjs';
+import { catchError, finalize, of, Subject, take, takeUntil, tap } from 'rxjs';
 import { ILoginData } from '../../api/services/models/contracts/login-data.interface';
 import { FormsModule } from '@angular/forms';
 import { AuthenticationService } from '../../api/services/authentication.service';
@@ -35,6 +35,7 @@ export class LoginComponent implements OnDestroy {
 
   public login(): void {
     this._service.login(this.loginData).pipe(
+      take(1),
       takeUntil(this._destroy$),
       tap(res => {
         if(res.isSuccess) {

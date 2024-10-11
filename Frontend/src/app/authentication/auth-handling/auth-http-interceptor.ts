@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AuthenticationService } from "../../api/services/authentication.service";
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { finalize, Observable } from "rxjs";
+import { catchError, finalize, Observable } from "rxjs";
 import { SpinnerService } from "../../base-components/spinner/spinner.service";
 
 @Injectable()
@@ -20,7 +20,15 @@ export class AuthHttpInterceptor implements HttpInterceptor {
                 headers: req.headers.set('Authorization', `Bearer ${token}`)
             });
 
-            return next.handle(request).pipe(finalize(() => this._spinner.hide()));
+            return next.handle(request).pipe(catchError(error => {
+                this._spinner.hide();
+
+                if (error.status == 401) {
+                    this._auth.logout();
+                }
+
+                throw error;
+            }), finalize(() => this._spinner.hide()));
         }
 
         return next.handle(req);

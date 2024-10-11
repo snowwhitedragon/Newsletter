@@ -1,7 +1,17 @@
-<h3>Newsletter</h3>
-<button class="btn btn-danger"><i class="bi bi-plus"></i> Neuer Artikel</button>
-<div>
-    <div *ngForOf="let item in articles$ | async">
-        <app-article-list-item [article]="item"></app-article-list-item>
+
+<div class="container">
+    <div class="d-flex">
+        <nav class="me-auto" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a routerLink="/">Startseite</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Neuigkeiten</li>
+            </ol>
+        </nav>
+        <button class="btn btn-danger mt-2" routerLink="/news/create" ><i class="bi bi-plus"></i> Beitrag hinzufügen</button>
+    </div>
+    <div class="row" >
+        <div class="col mt-4" *ngFor="let item of articles$ | async; let i = index" [ngClass]="i == 0 ? 'col-12' : 'col-md-4'">
+            <app-article-list-item [article]="item"></app-article-list-item>
+        </div>
     </div>
 </div>

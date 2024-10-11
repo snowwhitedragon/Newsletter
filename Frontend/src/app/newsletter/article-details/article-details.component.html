@@ -1,0 +1,17 @@
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Startseite</a></li>
+        <li class="breadcrumb-item"><a routerLink="/news">Neuigkeiten</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Beitrag</li>
+    </ol>
+</nav>
+<div *ngIf="article$ | async as article">
+    <img [src]="article.picture" class="img-fluid rounded " style="width: 100%;" alt="{{ article.title }}">
+    <div class="mt-4">
+        <h5 class="">{{ article.title }}</h5>
+        <p class="">{{ article.description }}</p>
+        <span class="text-muted text-xs" style="font-size: 12px;">
+            {{ article.published ? 'Veröffentlicht am ' + (article.publishedAt | date:'dd.MM.yyyy') : 'Erstellt am ' + (article.createdAt | date:'dd.MM.yyyy') }}, {{ article.createdBy?.displayName }}
+        </span>
+    </div>
+</div>

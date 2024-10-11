@@ -7,8 +7,7 @@ import { AuthenticationService } from "../../api/services/authentication.service
 })
 export class AuthGuard implements CanActivate {
     constructor(
-        private readonly _authService: AuthenticationService,
-        private readonly _router: Router
+        private readonly _authService: AuthenticationService
     ) {
     }
 
@@ -16,9 +15,8 @@ export class AuthGuard implements CanActivate {
         if (this._authService.isAuthenticated) {
             return true;
         } else {
-            this._router.navigate(['/login']);
+            this._authService.logout();
             return false;
         }
     }
-
 }

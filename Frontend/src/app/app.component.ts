@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthenticationService } from './api/services/authentication.service';
 import { SpinnerComponent } from './base-components/spinner/spinner.component';
 import { SpinnerService } from './base-components/spinner/spinner.service';
 import { Observable } from 'rxjs';
+import { MenuComponent } from './base-components/menu/menu.component';
 
 @Component({
   selector: 'app-root',
@@ -15,6 +16,7 @@ import { Observable } from 'rxjs';
     RouterLink,
     RouterLinkActive,
     SpinnerComponent,
+    MenuComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -23,8 +25,7 @@ export class AppComponent {
 
   constructor(
     private readonly _spinnerService: SpinnerService,
-    private readonly _auth: AuthenticationService,
-    private readonly _router: Router) {
+    private readonly _auth: AuthenticationService) {
   }
 
   public get isAuthenticated(): boolean {
@@ -37,6 +38,5 @@ export class AppComponent {
 
   public logout(): void {
     this._auth.logout();
-    this._router.navigate(['/login']);
   }
 }

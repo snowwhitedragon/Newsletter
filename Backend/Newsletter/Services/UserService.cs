@@ -9,7 +9,6 @@ using Newsletter.Services.Contracts;
 namespace Newsletter {
     public class UserService : IUserService {
         private readonly AppDbContext _context;
-        private readonly Guid _userId;
 
         public UserService(AppDbContext context) {
             this._context = context;

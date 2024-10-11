@@ -1,6 +1,7 @@
 <div class="app-container">
   <nav class="navbar navbar-expand-lg navbar-light bg-danger">
-    <h2 class="text-light"><i class="bi bi-controller"></i> NENTINDO </h2>
+    <button *ngIf="isAuthenticated" class="btn text-light ms-0 me-2 fs-5" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar" aria-controls="offcanvasSidebar"><i class="bi bi-list"></i></button>
+    <strong class="text-light fs-2"><i class="bi bi-controller"></i> NENTINDO </strong>
     <div class="me-auto">
     </div>
     <div>
@@ -9,8 +10,17 @@
       <!--<button class="btn btn-outline-danger" routerLink="/register" routerLinkActive="linkactive" ariaCurrentWhenActive="page">Registrieren</button>-->
     </div>
   </nav>
-  <div class="container d-block justify-content-center align-items-center" style="height: 100%;">
+  <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="offcanvasSidebar" aria-labelledby="offcanvasSidebarLabel">
+    <div class="offcanvas-header bg-danger text-white">
+      <h5 class="offcanvas-title" id="offcanvasSidebarLabel">Hauptmenü</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <app-menu></app-menu>
+    </div>
+</div>
+  <div class="container d-block justify-content-center align-items-center  mb-4" style="height: 100%;">
     <router-outlet />
   </div>
 </div>
-<app-spinner *ngIf="isLoading$ | async"></app-spinner>
+<app-spinner [isLoading]="isLoading$ | async"></app-spinner>

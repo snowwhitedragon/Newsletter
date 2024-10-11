@@ -4,6 +4,8 @@ import { ILoginData } from '../../api/services/models/contracts/login-data.inter
 import { IRegistrationData } from '../../api/services/models/contracts/registration-data.interface';
 import { BaseService } from './base/base-service';
 import { IResponse } from './base/contracts/response.interface';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +13,12 @@ import { IResponse } from './base/contracts/response.interface';
 export class AuthenticationService extends BaseService {
   route: string = 'authentication';
   private readonly tokenStorage = 'nentindo-news-token';
+
+  constructor(
+    private readonly _router: Router,
+    private readonly _http: HttpClient) {
+        super(_http);
+  }
 
   public get isAuthenticated(): boolean {
     return !!localStorage.getItem(this.tokenStorage);
@@ -22,6 +30,7 @@ export class AuthenticationService extends BaseService {
 
   public logout(): void {
     localStorage.removeItem(this.tokenStorage);
+    this._router.navigate(['/login']);
   }
 
   public login(user: ILoginData): Observable<IResponse<string>> {

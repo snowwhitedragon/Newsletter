@@ -1,0 +1,9 @@
+.list-group-item:first-child {
+    border-top-left-radius: unset;
+    border-top-right-radius: unset;
+}
+
+.list-group-item a {    
+    font-size: 18px;
+    color:  var(--bs-breadcrumb-item-active-color);
+}
