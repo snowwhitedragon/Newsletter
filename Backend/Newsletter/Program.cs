@@ -42,6 +42,15 @@ internal class Program {
 
         builder.Services.AddAuthorization();
 
+        builder.WebHost.ConfigureKestrel(serverOptions =>
+        {
+            serverOptions.ListenAnyIP(5000); // HTTP
+            serverOptions.ListenAnyIP(5001, listenOptions =>
+            {
+                listenOptions.UseHttps(); // Enable HTTPS
+            });
+        });
+
         // Register DbContext
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
