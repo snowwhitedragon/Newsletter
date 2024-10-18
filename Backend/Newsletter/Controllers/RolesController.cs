@@ -2,12 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Newsletter.Data;
 using Newsletter.Data.SearchRequests;
-using Newsletter.Entities;
 using Newsletter.Services.Contracts;
 
 namespace Newsletter.Controllers {
     [Authorize(Roles = $"{Roles.Admin},{Roles.Systemadmin}")]
-    public class RolesController: BaseViewController<Role, SearchRequestBase> {
+    public class RolesController: BaseViewController<HeaderData, SearchRequestBase> {
         private readonly IRoleService _service;
         public RolesController(IRoleService service)
             : base (service) {

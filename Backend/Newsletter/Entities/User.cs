@@ -23,6 +23,8 @@ public partial class User
 
     public virtual ICollection<Article> ArticlePublishedBies { get; set; } = new List<Article>();
 
+    public virtual ICollection<Article> ArticleUpdatedBies { get; set; } = new List<Article>();
+
     public virtual Contact? Contact { get; set; }
 
     public virtual Organization? Organization { get; set; }

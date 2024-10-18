@@ -34,11 +34,6 @@ namespace Newsletter.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
                     b.Property<Guid>("NewsletterId")
                         .HasColumnType("TEXT");
 
@@ -65,14 +60,22 @@ namespace Newsletter.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UpdatedById")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id")
-                        .HasName("PK__Articles__3214EC07181A2C70");
+                        .HasName("PK__tmp_ms_x__3214EC07A4E01AE0");
 
                     b.HasIndex(new[] { "CreatedById" }, "IX_Articles_Creator");
 
                     b.HasIndex(new[] { "NewsletterId" }, "IX_Articles_Newsletter");
 
                     b.HasIndex(new[] { "PublishedById" }, "IX_Articles_Publisher");
+
+                    b.HasIndex(new[] { "UpdatedById" }, "IX_Articles_Updated");
 
                     b.ToTable("Articles");
                 });
@@ -434,26 +437,34 @@ namespace Newsletter.Migrations
                         .WithMany("ArticleCreatedBies")
                         .HasForeignKey("CreatedById")
                         .IsRequired()
-                        .HasConstraintName("FK__Articles__Create__7FEAFD3E");
+                        .HasConstraintName("FK__Articles__Create__0C50D423");
 
                     b.HasOne("Newsletter.Entities.Newsletter", "Newsletter")
                         .WithMany("Articles")
                         .HasForeignKey("NewsletterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK__Articles__Newsle__625A9A57");
+                        .HasConstraintName("FK__Articles__Newsle__0B5CAFEA");
 
                     b.HasOne("Newsletter.Entities.User", "PublishedBy")
                         .WithMany("ArticlePublishedBies")
                         .HasForeignKey("PublishedById")
                         .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("FK__Articles__Publis__00DF2177");
+                        .HasConstraintName("FK__Articles__Publis__0A688BB1");
+
+                    b.HasOne("Newsletter.Entities.User", "UpdatedBy")
+                        .WithMany("ArticleUpdatedBies")
+                        .HasForeignKey("UpdatedById")
+                        .IsRequired()
+                        .HasConstraintName("FK__Articles__Update__0D44F85C");
 
                     b.Navigation("CreatedBy");
 
                     b.Navigation("Newsletter");
 
                     b.Navigation("PublishedBy");
+
+                    b.Navigation("UpdatedBy");
                 });
 
             modelBuilder.Entity("Newsletter.Entities.Contact", b =>
@@ -617,6 +628,8 @@ namespace Newsletter.Migrations
                     b.Navigation("ArticleCreatedBies");
 
                     b.Navigation("ArticlePublishedBies");
+
+                    b.Navigation("ArticleUpdatedBies");
                 });
 #pragma warning restore 612, 618
         }

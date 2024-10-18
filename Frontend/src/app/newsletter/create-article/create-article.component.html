@@ -6,24 +6,26 @@
     </ol>
 </nav>
 <div>
-    <h1>Neuer Beitrag</h1>
+  <h1 *ngIf="!isUpdate">Neuer Beitrag</h1>
+  <h1 *ngIf="isUpdate">Beitrag bearbeiten</h1>
     <form (ngSubmit)="onSubmit()" #articleForm="ngForm">
         <div class="mb-3">
-          <label for="newsletterId" class="form-label required">Newsletter</label>
-          <select id="newsletterId" class="form-select" required [(ngModel)]="article.newsletterId" name="newsletterId">
-            <option selected value="">--Bitte auswählen--</option>
-            <option value="1">Konzernweite Informationen</option>
-            <option value="2">Ankündigung neuer Games</option>
-          </select>
+          <label class="form-label required">Newsletter</label>
+          <app-newsletter-picker [selectedId]="article.newsletterId" (onSelect)="article.newsletterId = $event"></app-newsletter-picker>
         </div>
         <div class="mb-3">
           <label for="title" class="form-label required">Titel</label>
           <input type="text" id="title" class="form-control" [maxlength]="100" required [(ngModel)]="article.title" name="title">
           <p class="text-muted text-end" style="font-size: 10px;">{{article.title.length}} / 100</p>
         </div>
-        <div class="mb-3">
+        <div class="mb-3" *ngIf="article.previewPicture || previewPicture">
+          <img *ngIf="isUpdate && article.previewPicture" class="preview-img" title="Momentanes Bild" [src]="article.previewPicture"/>
+          <label *ngIf="previewPicture && isUpdate" class="text-center" style="width: 10%;"><i class="bi bi-arrow-right fs-1"></i></label>
+          <img *ngIf="previewPicture" class="preview-img" title="Neues Bild" [src]="previewPicture"/>
+        </div>
+        <div class="mb-3">          
           <label for="photo" class="form-label required">Bild</label>
-          <input type="file" id="photo" class="form-control" accept="image/*" required name="photo">
+          <input type="file" id="photo" class="form-control" accept="image/*" required name="photo" (change)="fileChanged($event)">
         </div>
       <div class="mb-3">
         <label for="summary" class="form-label required">Zusammenfassung</label>
@@ -35,7 +37,7 @@
         <textarea id="description" rows="6" class="form-control" required [(ngModel)]="article.description" name="description"></textarea>
       </div>
       <button type="button" class="btn me-4" routerLink="/news">Zurück</button>
-      <button type="submit" class="btn btn-danger" [disabled]="!articleForm.valid"><i class="bi bi-save"></i> Speichern</button>
+      <button type="submit" class="btn btn-danger" [disabled]="!articleForm.valid || (!article.newPicture && !isUpdate)"><i class="bi bi-save"></i> Speichern</button>
     </form>
   </div>
   

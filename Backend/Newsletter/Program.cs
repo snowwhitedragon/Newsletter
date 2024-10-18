@@ -16,14 +16,19 @@ using System.Text.Json.Serialization;
 internal class Program {
     private static void Main(string[] args) {
         var builder = WebApplication.CreateBuilder(args);
+
+        // CORS-Konfiguration
         builder.Services.AddCors(options => {
-            options.AddPolicy("AllowAny",
-                builder => builder.AllowAnyOrigin()
-                                  .AllowAnyMethod()
-                                  .AllowAnyHeader());
+            options.AddPolicy("AllowAny", builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         });
 
-        // Add services to the container.
+        // JWT Konfiguration
+        var jwtSettings = builder.Configuration.GetSection("Jwt");
+        if (string.IsNullOrEmpty(jwtSettings["Key"])) {
+            throw new ArgumentNullException("JWT Key is missing in appsettings.json");
+        }
+
+        // Authentifizierung und Autorisierung
         builder.Services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options => {
@@ -32,9 +37,9 @@ internal class Program {
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = builder.Configuration["Jwt:Issuer"],
-                    ValidAudience = builder.Configuration["Jwt:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+                    ValidIssuer = jwtSettings["Issuer"],
+                    ValidAudience = jwtSettings["Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!)),
                     RoleClaimType = ClaimTypes.Role,
                     NameClaimType = JwtRegisteredClaimNames.UniqueName,
                 };
@@ -42,13 +47,10 @@ internal class Program {
 
         builder.Services.AddAuthorization();
 
-        builder.WebHost.ConfigureKestrel(serverOptions =>
-        {
+        // Kestrel-Server-Konfiguration
+        builder.WebHost.ConfigureKestrel(serverOptions => {
             serverOptions.ListenAnyIP(5000); // HTTP
-            serverOptions.ListenAnyIP(5001, listenOptions =>
-            {
-                listenOptions.UseHttps(); // Enable HTTPS
-            });
+            serverOptions.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps()); // HTTPS
         });
 
         // Register DbContext
@@ -69,19 +71,26 @@ internal class Program {
         builder.Services.AddScoped<IUserService, UserService>();
         builder.Services.AddScoped<JwtTokenService>();
 
+        // Controller und Swagger
         builder.Services.AddControllers();
-
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c => {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Nentindo Newsletter", Version = "v1" });
         });
 
+        // Build the app
         var app = builder.Build();
 
+        // Create the SQLite database on startup
+        using (var scope = app.Services.CreateScope()) {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            dbContext.Database.Migrate();
+        }
+
+        // Use CORS
         app.UseCors("AllowAny");
 
-        // Configure the HTTP request pipeline.
+        // Middleware-Reihenfolge
         if (app.Environment.IsDevelopment()) {
             app.UseSwagger();
             app.UseSwaggerUI();
@@ -93,8 +102,10 @@ internal class Program {
 
         app.UseAuthentication();
         app.UseAuthorization();
+
         app.MapControllers();
 
+        // Start the app
         app.Run();
     }
 }

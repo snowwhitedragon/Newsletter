@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Newsletter.Data;
 using Newsletter.Data.SearchRequests;
@@ -13,17 +13,34 @@ namespace Newsletter {
 
         public ArticleService(AppDbContext context, IHttpContextAccessor httpContext) {
             this._context = context;
-            Guid.TryParse(httpContext.HttpContext?.User?.FindFirst(JwtRegisteredClaimNames.Sub)?.Value, out this._userId);
+            Guid.TryParse(httpContext.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier), out this._userId);
         }
 
-        public async Task<Response<Article>> CreateAsync(Article newEntry) {
-            var response = new Response<Article>();
+        public async Task<Response<ArticleData>> CreateAsync(ArticleData newEntry) {
+            var response = new Response<ArticleData>();
             try {
-                var currentUser = 
-                newEntry.CreatedAt = DateTime.Now;
-                newEntry.CreatedById = this._userId;
-                this._context.Articles.Add(newEntry);
+                if (newEntry.NewPicture == null) {
+                    response.AddError("Ein Bild muss mit angegeben werden.");
+                    return response;
+                }
+
+                var article = new Article {
+                    Id = Guid.NewGuid(),
+                    Title = newEntry.Title,
+                    Summary = newEntry.Summary,
+                    Description = newEntry.Description,
+                    Picture = newEntry.NewPicture,
+                    NewsletterId = newEntry.NewsletterId,
+                    CreatedAt = DateTime.Now,
+                    CreatedById = this._userId,
+                    UpdatedAt = DateTime.Now,
+                    UpdatedById = this._userId,
+                    Published = false
+                };
+
+                this._context.Articles.Add(article);
                 await _context.SaveChangesAsync();
+                response = await this.GetByIdAsync(article.Id);
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -37,12 +54,12 @@ namespace Newsletter {
                 var entry = await this._context.Articles.FirstOrDefaultAsync(a => a.Id == id);
 
                 if (entry == null) {
-                    response.AddError("Artikel wurde nicht gefunden.");
+                    response.AddError("Der Beitrag wurde nicht gefunden.");
                     return response;
                 }
 
                 if (entry.Published) {
-                    response.AddError("Der Artikel ist bereits veröffentlicht.");
+                    response.AddError("Der Beitrag ist bereits veröffentlicht.");
                     return response;
                 }
 
@@ -56,16 +73,38 @@ namespace Newsletter {
             return response;
         }
 
-        public async Task<Response<Article>> GetByIdAsync(Guid id) {
-            var response = new Response<Article>();
+        public async Task<Response<ArticleData>> GetByIdAsync(Guid id) {
+            var response = new Response<ArticleData>();
             try {
                 var article = await this._context.Articles
-                    .Include(x => x.Newsletter.Contacts)
                     .Include(x => x.PublishedBy)
+                    .Include(x => x.UpdatedBy)
                     .FirstOrDefaultAsync(x => x.Id == id);
 
                 if (article == null) {
-                    response.AddError("Artikel wurde nicht gefunden.");
+                    response.AddError("Der Beitrag wurde nicht gefunden.");
+                    return response;
+                }
+
+                response.Result = new ArticleData(article);
+            } catch (Exception ex) {
+                response.AddError(ex.Message);
+            }
+
+            return response;
+        }
+
+        public async Task<Response<Article>> GetArticleWithSubscribersAsync(Guid id) {
+            var response = new Response<Article>();
+            try {
+                var article = await this._context.Articles
+                    .Include(x => x.PublishedBy)
+                    .Include(x => x.UpdatedBy)
+                    .Include(x => x.Newsletter.Contacts)
+                    .FirstOrDefaultAsync(x => x.Id == id);
+
+                if (article == null) {
+                    response.AddError("Der Beitrag wurde nicht gefunden.");
                     return response;
                 }
 
@@ -77,12 +116,12 @@ namespace Newsletter {
             return response;
         }
 
-        public async Task<Response<Article>> PublishAsync(Guid id) {
-            var response = new Response<Article>();
+        public async Task<Response<ArticleData>> PublishAsync(Guid id) {
+            var response = new Response<ArticleData>();
             try {
-                var original = await this._context.Articles.FirstOrDefaultAsync(y => y.Id == id);
+                var original = await this._context.Articles.FindAsync(id);
                 if (original == null) {
-                    response.AddError("Artikel wurde nicht gefunden.");
+                    response.AddError("Der Beitrag wurde nicht gefunden.");
                     return response;
                 }
 
@@ -90,7 +129,7 @@ namespace Newsletter {
                 original.PublishedAt = DateTime.Now;
                 original.PublishedById = this._userId;
                 await this._context.SaveChangesAsync();
-                response.Result = original;
+                response = await this.GetByIdAsync(original.Id);
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -98,8 +137,8 @@ namespace Newsletter {
             return response;
         }
 
-        public async Task<Response<IEnumerable<Article>>> SearchAsync(ArticleSearchRequest searchRequest) {
-            var response = new Response<IEnumerable<Article>>();
+        public async Task<Response<IEnumerable<ArticleData>>> SearchAsync(ArticleSearchRequest searchRequest) {
+            var response = new Response<IEnumerable<ArticleData>>();
             try {
                 var query = this._context.Articles.AsQueryable();
                 if (!string.IsNullOrWhiteSpace(searchRequest.SearchTerm)) {
@@ -128,7 +167,7 @@ namespace Newsletter {
                     query = query.Where(x => x.Published == searchRequest.Published.Value);
                 }
 
-                response.Result = await query.OrderByDescending(x => x.CreatedAt).ToListAsync();
+                response.Result = await query.OrderByDescending(x => x.CreatedAt).Select(a => new ArticleData(a)).ToListAsync();
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -136,8 +175,33 @@ namespace Newsletter {
             return response;
         }
 
-        public Task<Response<Article>> UpdateAsync(Article updatedEntry) {
-            throw new NotImplementedException();
+        public async Task<Response<ArticleData>> UpdateAsync(ArticleData updatedEntry) {
+            var response = new Response<ArticleData>();
+            try {
+                var article = await this._context.Articles.FindAsync(updatedEntry.Id);
+                if (article == null) {
+                    response.AddError("Der Beitrag konnte nicht gefunden werden.");
+                    return response;
+                }
+
+                article.Title = updatedEntry.Title;
+                article.Summary = updatedEntry.Summary;
+                article.Description = updatedEntry.Description;
+                article.UpdatedAt = DateTime.Now;
+                article.UpdatedById = this._userId;
+
+                if (updatedEntry.NewPicture != null) {
+                    article.Picture = updatedEntry.NewPicture;
+                }
+
+                this._context.Articles.Update(article);
+                await _context.SaveChangesAsync();
+                response = await this.GetByIdAsync(article.Id);
+            } catch (Exception ex) {
+                response.AddError(ex.Message);
+            }
+
+            return response;
         }
     }
 }

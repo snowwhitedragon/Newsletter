@@ -7,11 +7,15 @@
                 <li class="breadcrumb-item active" aria-current="page">Neuigkeiten</li>
             </ol>
         </nav>
-        <button class="btn btn-danger mt-2" routerLink="/news/create" ><i class="bi bi-plus"></i> Beitrag hinzufügen</button>
+        <div class="form-group mt-2 me-4">
+            <input type="search" class="form-control" placeholder="Suche..." (input)="clear()" name="search" [(ngModel)]="request.searchTerm" (keydown.enter)="search()"/>
+        </div>
+        <button class="btn btn-danger mt-2" routerLink="/news/create" ><i class="bi bi-plus"></i> Neuer Beitrag</button>
     </div>
-    <div class="row" >
-        <div class="col mt-4" *ngFor="let item of articles$ | async; let i = index" [ngClass]="i == 0 ? 'col-12' : 'col-md-4'">
+    <div class="row" *ngIf="articles$ | async as articles" >
+        <div class="col mt-4" *ngFor="let item of articles; let i = index" [ngClass]="i == 0 ? 'col-12' : 'col-md-4'">
             <app-article-list-item [article]="item"></app-article-list-item>
         </div>
+        <div *ngIf="articles.length < 1" class="alert alert-warning col-12 mt-4">Es wurden keine Beiträge gefunden.</div>
     </div>
 </div>

@@ -13,8 +13,6 @@ public partial class Article
 
     public string Description { get; set; } = null!;
 
-    public string Link { get; set; } = null!;
-
     public byte[] Picture { get; set; } = null!;
 
     public Guid NewsletterId { get; set; }
@@ -22,6 +20,10 @@ public partial class Article
     public DateTime CreatedAt { get; set; }
 
     public Guid CreatedById { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public Guid UpdatedById { get; set; }
 
     public bool Published { get; set; }
 
@@ -34,4 +36,6 @@ public partial class Article
     public virtual Newsletter Newsletter { get; set; } = null!;
 
     public virtual User? PublishedBy { get; set; }
+
+    public virtual User UpdatedBy { get; set; } = null!;
 }

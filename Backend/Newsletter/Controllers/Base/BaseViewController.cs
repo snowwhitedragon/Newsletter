@@ -29,13 +29,13 @@ namespace Newsletter.Controllers {
         [HttpPost("Search")]
         public async Task<IActionResult> Search([FromBody] S searchRequest) {
             var result = await this._service.SearchAsync(searchRequest);
-            return ReturnJsonResult(result);
+            return Ok(result);
         }
 
         [HttpGet("GetById/{id}")]
         public async Task<IActionResult> GetById(Guid id) {
             var result = await this._service.GetByIdAsync(id);
-            return ReturnJsonResult(result);
+            return Ok(result);
         }
     }
 }

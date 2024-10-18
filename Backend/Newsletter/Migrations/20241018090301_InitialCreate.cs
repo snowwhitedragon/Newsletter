@@ -266,35 +266,41 @@ namespace Newsletter.Migrations
                     Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Summary = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
-                    Link = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Picture = table.Column<byte[]>(type: "BLOB", nullable: false),
                     NewsletterId = table.Column<Guid>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     CreatedById = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    UpdatedById = table.Column<Guid>(type: "TEXT", nullable: false),
                     Published = table.Column<bool>(type: "INTEGER", nullable: false),
                     PublishedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
                     PublishedById = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__Articles__3214EC07181A2C70", x => x.Id);
+                    table.PrimaryKey("PK__tmp_ms_x__3214EC07A4E01AE0", x => x.Id);
                     table.ForeignKey(
-                        name: "FK__Articles__Create__7FEAFD3E",
+                        name: "FK__Articles__Create__0C50D423",
                         column: x => x.CreatedById,
                         principalTable: "Users",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK__Articles__Newsle__625A9A57",
+                        name: "FK__Articles__Newsle__0B5CAFEA",
                         column: x => x.NewsletterId,
                         principalTable: "Newsletters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK__Articles__Publis__00DF2177",
+                        name: "FK__Articles__Publis__0A688BB1",
                         column: x => x.PublishedById,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK__Articles__Update__0D44F85C",
+                        column: x => x.UpdatedById,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -335,6 +341,11 @@ namespace Newsletter.Migrations
                 name: "IX_Articles_Publisher",
                 table: "Articles",
                 column: "PublishedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_Updated",
+                table: "Articles",
+                column: "UpdatedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contact_State",

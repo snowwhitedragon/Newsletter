@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  backend: 'https://localhost:5001/'
+  backend: 'https://js.crm.my.bbs/'
 };

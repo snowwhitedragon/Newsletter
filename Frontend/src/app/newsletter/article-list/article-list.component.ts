@@ -6,6 +6,7 @@ import { ArticleSearchRequest } from '../../api/services/models/article-search-r
 import { ArticleListItemComponent } from '../article-list-item/article-list-item.component';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-article-list',
@@ -14,6 +15,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     CommonModule,
     ArticleListItemComponent,    
     RouterLink,
+    FormsModule
   ],
   templateUrl: './article-list.component.html',
   styleUrl: './article-list.component.scss'
@@ -29,18 +31,16 @@ export class ArticleListComponent implements OnInit {
 
   ngOnInit(): void {
     this.request.organizationId = this.organizationId;
+    this.search();
+  }
+
+  public search(): void {
     this.articles$ = this._articleService.search(this.request).pipe(map(res => res?.result ?? []));
   }
 
-  public groupArticles(articles: IArticle[] | null): IArticle[][] {
-    if (articles == null) {
-      return [];
+  public clear(): void {
+    if (!this.request.searchTerm) {
+      this.search();
     }
-
-    const grouped: IArticle[][] = [];
-    for (let i = 0; i < articles.length; i += 3) {
-      grouped.push(articles.slice(i, i + 3));
-    }
-    return grouped;
-  }  
+  }
 }

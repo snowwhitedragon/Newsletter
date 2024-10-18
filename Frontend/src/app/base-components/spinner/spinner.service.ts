@@ -15,6 +15,5 @@ export class SpinnerService {
 
     public hide(): void {
         this._loading$.next(false);
-        console.log('hide')
     }
 }

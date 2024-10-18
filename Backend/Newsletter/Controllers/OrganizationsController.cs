@@ -7,7 +7,7 @@ using Newsletter.Services.Contracts;
 
 namespace Newsletter.Controllers {
     [Authorize(Roles = $"{Roles.Admin},{Roles.Systemadmin}")]
-    public class OrganizationsController : BaseViewController<Organization, SearchRequestBase> {
+    public class OrganizationsController : BaseViewController<OrganizationData, OrganizationSearchRequest> {
         private readonly IOrganizationService _service;
         public OrganizationsController(IOrganizationService service)
             : base (service) {

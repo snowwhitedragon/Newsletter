@@ -6,12 +6,12 @@
     </ol>
 </nav>
 <div *ngIf="article$ | async as article">
-    <img [src]="article.picture" class="img-fluid rounded " style="width: 100%;" alt="{{ article.title }}">
+    <img [src]="article.previewPicture" class="img-fluid rounded " style="width: 100%;" alt="{{ article.title }}">
     <div class="mt-4">
         <h5 class="">{{ article.title }}</h5>
         <p class="">{{ article.description }}</p>
         <span class="text-muted text-xs" style="font-size: 12px;">
-            {{ article.published ? 'Veröffentlicht am ' + (article.publishedAt | date:'dd.MM.yyyy') : 'Erstellt am ' + (article.createdAt | date:'dd.MM.yyyy') }}, {{ article.createdBy?.displayName }}
+            {{ article.published ? 'Veröffentlicht am ' + (article.publishedAt | date:'dd.MM.yyyy')  + ', ' + article.publishedByName : 'Erstellt am ' + (article.updatedAt | date:'dd.MM.yyyy') + ', ' + article.updatedByName }}
         </span>
     </div>
 </div>

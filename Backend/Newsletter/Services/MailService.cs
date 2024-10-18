@@ -56,7 +56,7 @@ namespace Newsletter {
             var response = new Response<bool>();
 
             try {
-                Response<Article> articleResponse = await this._articleService.GetByIdAsync(articleId);
+                Response<Article> articleResponse = await this._articleService.GetArticleWithSubscribersAsync(articleId);
                 if (!articleResponse.IsSuccess || articleResponse.Result == null) {
                     response.AddError("Artikel wurde nicht gefunden und konnte somit nicht an alle versendet werden");
                     return response;

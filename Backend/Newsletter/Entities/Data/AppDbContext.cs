@@ -40,7 +40,7 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.Entity<Article>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Articles__3214EC07181A2C70");
+            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07A4E01AE0");
 
             entity.HasIndex(e => e.CreatedById, "IX_Articles_Creator");
 
@@ -48,24 +48,30 @@ public partial class AppDbContext : DbContext
 
             entity.HasIndex(e => e.PublishedById, "IX_Articles_Publisher");
 
+            entity.HasIndex(e => e.UpdatedById, "IX_Articles_Updated");
+
             entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
-            entity.Property(e => e.Link).HasMaxLength(255);
             entity.Property(e => e.Summary).HasMaxLength(255);
             entity.Property(e => e.Title).HasMaxLength(100);
 
             entity.HasOne(d => d.CreatedBy).WithMany(p => p.ArticleCreatedBies)
                 .HasForeignKey(d => d.CreatedById)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Articles__Create__7FEAFD3E");
+                .HasConstraintName("FK__Articles__Create__0C50D423");
 
             entity.HasOne(d => d.Newsletter).WithMany(p => p.Articles)
                 .HasForeignKey(d => d.NewsletterId)
-                .HasConstraintName("FK__Articles__Newsle__625A9A57");
+                .HasConstraintName("FK__Articles__Newsle__0B5CAFEA");
 
             entity.HasOne(d => d.PublishedBy).WithMany(p => p.ArticlePublishedBies)
                 .HasForeignKey(d => d.PublishedById)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Articles__Publis__00DF2177");
+                .HasConstraintName("FK__Articles__Publis__0A688BB1");
+
+            entity.HasOne(d => d.UpdatedBy).WithMany(p => p.ArticleUpdatedBies)
+                .HasForeignKey(d => d.UpdatedById)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__Articles__Update__0D44F85C");
         });
 
         modelBuilder.Entity<Contact>(entity =>

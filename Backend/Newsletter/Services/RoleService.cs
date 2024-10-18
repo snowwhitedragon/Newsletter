@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Data;
+using Microsoft.EntityFrameworkCore;
 using Newsletter.Data;
 using Newsletter.Data.SearchRequests;
 using Newsletter.Entities;
@@ -12,8 +13,9 @@ namespace Newsletter.Services {
             this._context = context;
         }
 
-        public async Task<Response<User>> AssignRoleToUserAsync(Guid userId, Guid roleId) {
-            var response = new Response<User>();
+        public async Task<Response<bool>> AssignRoleToUserAsync(Guid userId, Guid roleId) {
+            var response = new Response<bool>();
+            response.Result = false;
             try {
                 var role = await this._context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
                 if (role == null) {
@@ -29,7 +31,7 @@ namespace Newsletter.Services {
 
                 user.Roles.Add(role);
                 await _context.SaveChangesAsync();
-                response.Result = user;
+                response.Result = true;
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -37,8 +39,8 @@ namespace Newsletter.Services {
             return response;
         }
 
-        public async Task<Response<Role>> GetByIdAsync(Guid id) {
-            var response = new Response<Role>();
+        public async Task<Response<HeaderData>> GetByIdAsync(Guid id) {
+            var response = new Response<HeaderData>();
             try {
                 var role = await this._context.Roles.FirstOrDefaultAsync(r => r.Id == id);
                 if (role == null) {
@@ -46,7 +48,7 @@ namespace Newsletter.Services {
                     return response;
                 }
 
-                response.Result = role;
+                response.Result = new HeaderData() { Id = role.Id, Title = role.Title };
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -54,10 +56,14 @@ namespace Newsletter.Services {
             return response;
         }
 
-        public async Task<Response<IEnumerable<Role>>> GetUserRolesAsync(Guid userId) {
-            var response = new Response<IEnumerable<Role>>();
+        public async Task<Response<IEnumerable<HeaderData>>> GetUserRolesAsync(Guid userId) {
+            var response = new Response<IEnumerable<HeaderData>>();
             try {
-                var roles = await this._context.Roles.Where(r => r.Users.Any(u => u.Id == userId)).ToListAsync();
+                var roles = await this._context.Roles
+                    .Include(r => r.Users)
+                    .Where(r => r.Users.Any(u => u.Id == userId))
+                    .Select(r => new HeaderData() { Id = r.Id, Title = r.Title })
+                    .ToListAsync();
                 response.Result = roles;
             } catch (Exception ex) {
                 response.AddError(ex.Message);
@@ -66,8 +72,8 @@ namespace Newsletter.Services {
             return response;
         }
 
-        public async Task<Response<IEnumerable<Role>>> SearchAsync(SearchRequestBase searchRequest) {
-            var response = new Response<IEnumerable<Role>>();
+        public async Task<Response<IEnumerable<HeaderData>>> SearchAsync(SearchRequestBase searchRequest) {
+            var response = new Response<IEnumerable<HeaderData>>();
             try {
                 IQueryable<Role> query = this._context.Roles;
 
@@ -77,7 +83,8 @@ namespace Newsletter.Services {
 
                 query = this.OrderBy(query, searchRequest);
 
-                response.Result = await query.Skip(searchRequest.Skip).Take(searchRequest.Take).ToListAsync();
+                response.Result = await query.Skip(searchRequest.Skip).Take(searchRequest.Take)
+                    .Select(r => new HeaderData() { Id = r.Id, Title = r.Title }).ToListAsync();
                 if (!response.Result.Any()) {
                     response.AddError("Die Suche ergab keine Ergebnisse");
                 }

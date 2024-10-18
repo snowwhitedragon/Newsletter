@@ -13,3 +13,12 @@
     text-decoration: dashed;
 }
 
+.snack-success .mat-mdc-snackbar-surface {
+    background-color: #4caf50!important;
+    color: white!important;
+}
+
+.snack-error .mat-mdc-snackbar-surface {
+    background-color: #e63f52!important;
+    color: white!important;
+}

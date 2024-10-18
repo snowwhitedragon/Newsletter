@@ -1,6 +1,7 @@
 import { ITitleData } from "../../base/contracts/title-data.interface";
+import { INewsletter } from "./newsletter.interface";
 
 export interface IOrganization extends ITitleData {
-    responsibilityType: number;
     description: string;
+    newsletters: INewsletter[];
 }

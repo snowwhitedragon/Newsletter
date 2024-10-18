@@ -1,10 +1,13 @@
 <div class="card">
-    <img [src]="article.picture" class="card-img-top" alt="{{ article.title }}">    
+    <img [src]="article.previewPicture" class="card-img-top" alt="{{ article.title }}">    
     <div class="card-body">
-        <h5 class="card-title">{{ article.title }}</h5>
+        <div class="card-title d-flex">
+            <h5 class="me-auto">{{ article.title }}</h5>
+            <a class="btn" *ngIf="!article.published" routerLink="/news/edit/{{article.id}}"><i class="bi bi-pencil"></i></a>
+        </div>
         <p class="card-text">{{ article.summary }}</p>
         <span class="text-muted text-xs" style="font-size: 12px;">
-            {{ article.published ? 'Veröffentlicht am ' + (article.publishedAt | date:'dd.MM.yyyy') : 'Erstellt am ' + (article.createdAt | date:'dd.MM.yyyy') }}, {{ article.createdBy?.displayName }}
+            {{ article.published ? 'Veröffentlicht am ' + (article.publishedAt | date:'dd.MM.yyyy') : 'Letzte Änderung am ' + (article.updatedAt | date:'dd.MM.yyyy') }}, {{ article.updatedByName }}
         </span>
     </div>
     <div class="card-footer text-end">

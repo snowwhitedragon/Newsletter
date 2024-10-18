@@ -20,21 +20,21 @@ namespace Newsletter.Controllers.Base
         public virtual async Task<IActionResult> Create([FromBody] T value)
         {
             var result = await this._service.CreateAsync(value);
-            return ReturnJsonResult(result);
+            return Ok(result);
         }
 
         [HttpPost("Update")]
         public virtual async Task<IActionResult> Update([FromBody] T value)
         {
             var result = await this._service.UpdateAsync(value);
-            return ReturnJsonResult(result);
+            return Ok(result);
         }
 
         [HttpDelete("Delete/{id}")]
         public virtual async Task<IActionResult> Delete(Guid id)
         {
             var result = await this._service.DeleteAsync(id);
-            return ReturnJsonResult(result);
+            return Ok(result);
         }
     }
 }

@@ -1,0 +1,8 @@
+<select *ngIf="response$ | async as response" class="form-select" name="newsletterSelect" [ngModel]="selected" (change)="onChange($event)">
+    <option selected [value]="''">--Bitte auswählen--</option>
+    <optgroup *ngFor="let org of options" [label]="org.title">
+        <option *ngFor="let newsletter of org.newsletters" [value]="newsletter.id">
+          {{newsletter.title}}
+        </option>
+    </optgroup>
+</select>
