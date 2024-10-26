@@ -40,7 +40,7 @@ public partial class AppDbContext : DbContext
     {
         modelBuilder.Entity<Article>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC07A4E01AE0");
+            entity.HasKey(e => e.Id).HasName("PK__tmp_ms_x__3214EC071BAB57FB");
 
             entity.HasIndex(e => e.CreatedById, "IX_Articles_Creator");
 
@@ -57,21 +57,25 @@ public partial class AppDbContext : DbContext
             entity.HasOne(d => d.CreatedBy).WithMany(p => p.ArticleCreatedBies)
                 .HasForeignKey(d => d.CreatedById)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Articles__Create__0C50D423");
+                .HasConstraintName("FK__Articles__Create__1F63A897");
 
             entity.HasOne(d => d.Newsletter).WithMany(p => p.Articles)
                 .HasForeignKey(d => d.NewsletterId)
-                .HasConstraintName("FK__Articles__Newsle__0B5CAFEA");
+                .HasConstraintName("FK__Articles__Newsle__1E6F845E");
+
+            entity.HasOne(d => d.Organization).WithMany(p => p.Articles)
+                .HasForeignKey(d => d.OrganizationId)
+                .HasConstraintName("FK__Articles__Organi__214BF109");
 
             entity.HasOne(d => d.PublishedBy).WithMany(p => p.ArticlePublishedBies)
                 .HasForeignKey(d => d.PublishedById)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK__Articles__Publis__0A688BB1");
+                .HasConstraintName("FK__Articles__Publis__1D7B6025");
 
             entity.HasOne(d => d.UpdatedBy).WithMany(p => p.ArticleUpdatedBies)
                 .HasForeignKey(d => d.UpdatedById)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Articles__Update__0D44F85C");
+                .HasConstraintName("FK__Articles__Update__2057CCD0");
         });
 
         modelBuilder.Entity<Contact>(entity =>

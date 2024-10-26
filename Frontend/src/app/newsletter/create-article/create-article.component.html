@@ -1,43 +1,99 @@
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/">Startseite</a></li>
-        <li class="breadcrumb-item"><a routerLink="/news">Neuigkeiten</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Neuer Beitrag</li>
-    </ol>
+<nav style="--bs-breadcrumb-divider: '>'" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/">Startseite</a></li>
+    <li class="breadcrumb-item"><a routerLink="/news">Neuigkeiten</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Neuer Beitrag</li>
+  </ol>
 </nav>
 <div>
   <h1 *ngIf="!isUpdate">Neuer Beitrag</h1>
   <h1 *ngIf="isUpdate">Beitrag bearbeiten</h1>
-    <form (ngSubmit)="onSubmit()" #articleForm="ngForm">
-        <div class="mb-3">
-          <label class="form-label required">Newsletter</label>
-          <app-newsletter-picker [selectedId]="article.newsletterId" (onSelect)="article.newsletterId = $event"></app-newsletter-picker>
-        </div>
-        <div class="mb-3">
-          <label for="title" class="form-label required">Titel</label>
-          <input type="text" id="title" class="form-control" [maxlength]="100" required [(ngModel)]="article.title" name="title">
-          <p class="text-muted text-end" style="font-size: 10px;">{{article.title.length}} / 100</p>
-        </div>
-        <div class="mb-3" *ngIf="article.previewPicture || previewPicture">
-          <img *ngIf="isUpdate && article.previewPicture" class="preview-img" title="Momentanes Bild" [src]="article.previewPicture"/>
-          <label *ngIf="previewPicture && isUpdate" class="text-center" style="width: 10%;"><i class="bi bi-arrow-right fs-1"></i></label>
-          <img *ngIf="previewPicture" class="preview-img" title="Neues Bild" [src]="previewPicture"/>
-        </div>
-        <div class="mb-3">          
-          <label for="photo" class="form-label required">Bild</label>
-          <input type="file" id="photo" class="form-control" accept="image/*" required name="photo" (change)="fileChanged($event)">
-        </div>
-      <div class="mb-3">
-        <label for="summary" class="form-label required">Zusammenfassung</label>
-        <textarea id="summary" class="form-control" required [maxlength]="255" [(ngModel)]="article.summary" name="summary"></textarea>
-        <p class="text-muted text-end" style="font-size: 10px;">{{article.summary.length}} / 255</p>
-      </div>
-      <div class="mb-3">
-        <label for="description" class="form-label required">Beschreibung</label>
-        <textarea id="description" rows="6" class="form-control" required [(ngModel)]="article.description" name="description"></textarea>
-      </div>
-      <button type="button" class="btn me-4" routerLink="/news">Zurück</button>
-      <button type="submit" class="btn btn-danger" [disabled]="!articleForm.valid || (!article.newPicture && !isUpdate)"><i class="bi bi-save"></i> Speichern</button>
-    </form>
-  </div>
-  
+  <form (ngSubmit)="onSubmit()" #articleForm="ngForm">
+    <app-newsletter-picker
+      [selectedNewsletterId]="article.newsletterId"
+      (onNewsletterSelect)="article.newsletterId = $event"
+      [selectedOrganizationId]="article.organizationId"
+      (onOrganizationSelect)="article.organizationId = $event"
+    ></app-newsletter-picker>
+    <div class="mb-3">
+      <label for="title" class="form-label required">Titel</label>
+      <input
+        type="text"
+        id="title"
+        class="form-control"
+        [maxlength]="100"
+        required
+        [(ngModel)]="article.title"
+        name="title"
+      />
+      <p class="text-muted text-end" style="font-size: 10px">
+        {{ article.title.length }} / 100
+      </p>
+    </div>
+    <div class="mb-3" *ngIf="article.previewPicture || article.newPicture">
+      <img
+        *ngIf="isUpdate && article.previewPicture"
+        class="preview-img"
+        title="Momentanes Bild"
+        [src]="article.previewPicture"
+      />
+      <label
+        *ngIf="article.newPicture && isUpdate"
+        class="text-center"
+        style="width: 10%"
+        ><i class="bi bi-arrow-right fs-1"></i
+      ></label>
+      <img
+        *ngIf="article.newPicture"
+        class="preview-img"
+        title="Neues Bild"
+        [src]="'data:image/png;base64,' + article.newPicture"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="photo" class="form-label required">Bild</label>
+      <input
+        type="file"
+        id="photo"
+        class="form-control"
+        accept="image/*"
+        required
+        name="photo"
+        (change)="fileChanged($event)"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="summary" class="form-label required">Zusammenfassung</label>
+      <textarea
+        id="summary"
+        class="form-control"
+        required
+        [maxlength]="255"
+        [(ngModel)]="article.summary"
+        name="summary"
+      ></textarea>
+      <p class="text-muted text-end" style="font-size: 10px">
+        {{ article.summary.length }} / 255
+      </p>
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label required">Beschreibung</label>
+      <textarea
+        id="description"
+        rows="6"
+        class="form-control"
+        required
+        [(ngModel)]="article.description"
+        name="description"
+      ></textarea>
+    </div>
+    <button type="button" class="btn me-4" routerLink="/news">Zurück</button>
+    <button
+      type="submit"
+      class="btn btn-danger"
+      [disabled]="!articleForm.valid || (!article.newPicture && !isUpdate)"
+    >
+      <i class="bi bi-save"></i> Speichern
+    </button>
+  </form>
+</div>

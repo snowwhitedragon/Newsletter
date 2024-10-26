@@ -2,17 +2,15 @@
 
 namespace Newsletter.Data {
     public class OrganizationData {
-        public OrganizationData(Organization organization) {
-            this.Id = organization.Id;
-            this.Title = organization.Title;
-
-            if (organization.Newsletters != null && organization.Newsletters.Any()) {
-                this.Newsletters = organization.Newsletters.Select(n => new NewsletterData(n)).ToList();
-            }
-        }
-
         public Guid Id { get; set; }
-        public string Title { get; set; }
+        public required string Title { get; set; }
         public List<NewsletterData> Newsletters { get; set; } = new List<NewsletterData>();
+        public static OrganizationData Map(Organization organization) {
+            return new OrganizationData() {
+                Id = organization.Id,
+                Title = organization.Title,
+                Newsletters = organization.Newsletters.Select(n => NewsletterData.Map(n)).ToList()
+            };
+        }
     }
 }

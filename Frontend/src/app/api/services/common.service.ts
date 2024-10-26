@@ -1,57 +1,30 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root',
+})
 export class CommonService {
+  constructor() {}
 
-    constructor() {}
+  /**
+   * Converts a File object to a base64 string.
+   * @param file The file to convert.
+   * @returns A Promise that resolves to the base64 string.
+   */
+  public fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-    /**
-     * Converts a byte array to base64 string to display as image
-     * @param byteArray The array to convert.
-     * @returns the source for an image.
-     */
-    public convertByteArrayToBase64(byteArray: Uint8Array): Promise<string> {
-        return new Promise((resolve, reject) => {
-            try {
-                // Create a blob from the byte array
-                const blob = new Blob([byteArray], { type: 'image/jpeg' });  // Adjust the type as per your file
-                const reader = new FileReader();
-            
-                // Listen for the load event to get the base64
-                reader.onloadend = () => {
-                    resolve(reader.result as string);
-                };
-            
-                // Trigger reading the blob as DataURL (Base64)
-                reader.readAsDataURL(blob);
-            } catch (error) {
-                reject(error);
-            }
-        });
-    }
+      reader.onload = (event: any) => {
+        const base64String = event.target.result.split(',')[1]; // Remove data URL prefix
+        resolve(base64String);
+      };
 
-    /**
-     * Converts a File object to a Uint8Array (byte array).
-     * @param file The file to convert.
-     * @returns A Promise that resolves to the byte array (Uint8Array).
-     */
-    public fileToByteArray(file: File): Promise<Uint8Array> {
-        return new Promise((resolve, reject) => {
-        const reader = new FileReader();
+      reader.onerror = (error) => {
+        reject(error);
+      };
 
-        reader.onload = (event: any) => {
-            const arrayBuffer = event.target.result;
-            const byteArray = new Uint8Array(arrayBuffer);
-            resolve(byteArray);
-        };
-
-        reader.onerror = (error) => {
-            reject(error);
-        };
-
-        reader.readAsArrayBuffer(file);
-        });
-    }
+      reader.readAsDataURL(file);
+    });
+  }
 }

@@ -31,14 +31,17 @@ namespace Newsletter {
                     Description = newEntry.Description,
                     Picture = newEntry.NewPicture,
                     NewsletterId = newEntry.NewsletterId,
+                    OrganizationId = newEntry.OrganizationId,
                     CreatedAt = DateTime.Now,
                     CreatedById = this._userId,
                     UpdatedAt = DateTime.Now,
                     UpdatedById = this._userId,
-                    Published = false
+                    Published = false,
+                    PublishedAt = null,
+                    PublishedById = null
                 };
 
-                this._context.Articles.Add(article);
+                article = this._context.Articles.Add(article).Entity;
                 await _context.SaveChangesAsync();
                 response = await this.GetByIdAsync(article.Id);
             } catch (Exception ex) {
@@ -86,7 +89,7 @@ namespace Newsletter {
                     return response;
                 }
 
-                response.Result = new ArticleData(article);
+                response.Result = ArticleData.Map(article);
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -167,7 +170,7 @@ namespace Newsletter {
                     query = query.Where(x => x.Published == searchRequest.Published.Value);
                 }
 
-                response.Result = await query.OrderByDescending(x => x.CreatedAt).Select(a => new ArticleData(a)).ToListAsync();
+                response.Result = await query.OrderByDescending(x => x.CreatedAt).Select(a => ArticleData.Map(a)).ToListAsync();
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }

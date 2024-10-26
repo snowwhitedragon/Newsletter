@@ -27,7 +27,7 @@ namespace Newsletter.Services {
                     return response;
                 }
 
-                response.Result = new OrganizationData(organization);
+                response.Result = OrganizationData.Map(organization);
             } catch (Exception ex) {
                 response.AddError(ex.Message);
             }
@@ -58,7 +58,7 @@ namespace Newsletter.Services {
 
                 query = this.OrderBy(query, searchRequest);
 
-                response.Result = await query.Skip(searchRequest.Skip).Take(searchRequest.Take).Select(o => new OrganizationData(o)).ToListAsync();
+                response.Result = await query.Skip(searchRequest.Skip).Take(searchRequest.Take).Select(o => OrganizationData.Map(o)).ToListAsync();
                 if (!response.Result.Any()) {
                     response.AddError("Die Suche ergab keine Ergebnisse");
                 }

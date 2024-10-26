@@ -15,7 +15,7 @@ namespace Newsletter.Migrations
                 name: "Newsletters",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true)
                 },
@@ -28,7 +28,7 @@ namespace Newsletter.Migrations
                 name: "Organizations",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     ResponsibilityType = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 255, nullable: true)
@@ -42,7 +42,7 @@ namespace Newsletter.Migrations
                 name: "Roles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     Code = table.Column<string>(type: "TEXT", maxLength: 5, nullable: false),
                     Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
@@ -55,7 +55,7 @@ namespace Newsletter.Migrations
                 name: "States",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Language = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     LanguageCode = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false)
@@ -69,7 +69,7 @@ namespace Newsletter.Migrations
                 name: "Subcontractors",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     CompanyName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -81,7 +81,7 @@ namespace Newsletter.Migrations
                 name: "Suppliers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     CompanyName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
@@ -93,8 +93,8 @@ namespace Newsletter.Migrations
                 name: "OrganizationNewsletters",
                 columns: table => new
                 {
-                    OrganizationId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    NewsletterId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    OrganizationId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    NewsletterId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE")
                 },
                 constraints: table =>
                 {
@@ -117,14 +117,14 @@ namespace Newsletter.Migrations
                 name: "Contacts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     ReadableId = table.Column<string>(type: "TEXT", maxLength: 15, nullable: false),
                     Salutation = table.Column<string>(type: "TEXT", maxLength: 10, nullable: false),
                     FirstName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     LastName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    StateId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    LanguageId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    StateId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    LanguageId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE")
                 },
                 constraints: table =>
                 {
@@ -145,9 +145,9 @@ namespace Newsletter.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     ReadableId = table.Column<string>(type: "TEXT", maxLength: 15, nullable: true),
-                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE")
                 },
                 constraints: table =>
                 {
@@ -163,8 +163,8 @@ namespace Newsletter.Migrations
                 name: "SubcontractorContacts",
                 columns: table => new
                 {
-                    SubcontractorId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    SubcontractorId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE")
                 },
                 constraints: table =>
                 {
@@ -187,8 +187,8 @@ namespace Newsletter.Migrations
                 name: "Subscriptions",
                 columns: table => new
                 {
-                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    NewsletterId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    NewsletterId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE")
                 },
                 constraints: table =>
                 {
@@ -211,8 +211,8 @@ namespace Newsletter.Migrations
                 name: "SupplierContacts",
                 columns: table => new
                 {
-                    SupplierId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    SupplierId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    ContactId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE")
                 },
                 constraints: table =>
                 {
@@ -235,13 +235,13 @@ namespace Newsletter.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
                     DisplayName = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
-                    OrganizationId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    ContactId = table.Column<Guid>(type: "TEXT", nullable: true),
-                    RegistratedAt = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "(CURRENT_TIMESTAMP)")
+                    OrganizationId = table.Column<Guid>(type: "TEXT", nullable: true, collation: "NOCASE"),
+                    ContactId = table.Column<Guid>(type: "TEXT", nullable: true, collation: "NOCASE"),
+                    RegistratedAt = table.Column<DateTime>(type: "TEXT", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP")
                 },
                 constraints: table =>
                 {
@@ -262,42 +262,49 @@ namespace Newsletter.Migrations
                 name: "Articles",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(lower(hex(randomblob(16))))"),
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false, defaultValueSql: "(upper(hex(randomblob(16))))", collation: "NOCASE"),
                     Title = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Summary = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Picture = table.Column<byte[]>(type: "BLOB", nullable: false),
-                    NewsletterId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    NewsletterId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    OrganizationId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreatedById = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CreatedById = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
                     UpdatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    UpdatedById = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UpdatedById = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
                     Published = table.Column<bool>(type: "INTEGER", nullable: false),
                     PublishedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    PublishedById = table.Column<Guid>(type: "TEXT", nullable: true)
+                    PublishedById = table.Column<Guid>(type: "TEXT", nullable: true, collation: "NOCASE")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK__tmp_ms_x__3214EC07A4E01AE0", x => x.Id);
+                    table.PrimaryKey("PK__tmp_ms_x__3214EC071BAB57FB", x => x.Id);
                     table.ForeignKey(
-                        name: "FK__Articles__Create__0C50D423",
+                        name: "FK__Articles__Create__1F63A897",
                         column: x => x.CreatedById,
                         principalTable: "Users",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK__Articles__Newsle__0B5CAFEA",
+                        name: "FK__Articles__Newsle__1E6F845E",
                         column: x => x.NewsletterId,
                         principalTable: "Newsletters",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK__Articles__Publis__0A688BB1",
+                        name: "FK__Articles__Organi__214BF109",
+                        column: x => x.OrganizationId,
+                        principalTable: "Organizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK__Articles__Publis__1D7B6025",
                         column: x => x.PublishedById,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK__Articles__Update__0D44F85C",
+                        name: "FK__Articles__Update__2057CCD0",
                         column: x => x.UpdatedById,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -307,8 +314,8 @@ namespace Newsletter.Migrations
                 name: "UserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: false),
-                    RoleId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE"),
+                    RoleId = table.Column<Guid>(type: "TEXT", nullable: false, collation: "NOCASE")
                 },
                 constraints: table =>
                 {
@@ -336,6 +343,11 @@ namespace Newsletter.Migrations
                 name: "IX_Articles_Newsletter",
                 table: "Articles",
                 column: "NewsletterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Articles_OrganizationId",
+                table: "Articles",
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Articles_Publisher",
@@ -440,7 +452,7 @@ namespace Newsletter.Migrations
                 column: "Username",
                 unique: true);
 
-            // Einfügen von Startdaten in die Roles-Tabelle
+            // Insert seed data into Roles table
             migrationBuilder.Sql("INSERT INTO Roles (Id, Code, Title) VALUES " +
                 "('A8A77FEA-12E5-45AE-8F1E-5D774FA67F37', 'SYS', 'Systemadministrator'), " +
                 "('AC40C0A9-072A-4E2B-ABE0-293237BA9965', 'ADM', 'Administrator'), " +
@@ -448,41 +460,41 @@ namespace Newsletter.Migrations
                 "('B53C2C1C-9D7A-439D-922F-D00AFBA761A3', 'EMP', 'Employee'), " +
                 "('13FD0538-0F80-47D3-87D7-C7B19CEB8CF4', 'GUEST', 'Gast');");
 
-            // Einfügen von Startdaten in die Organizations-Tabelle
+            // Insert seed data into Organizations table
             migrationBuilder.Sql("INSERT INTO Organizations (Id, Title, ResponsibilityType, Description) VALUES " +
-                "('c47d77b2-a90f-403b-91af-dac47ad83372', 'Nentindo', 0, 'Nentindo ist für das Kundengeschäft verantwortlich und repräsentiert auch die Hauptorganisation.'), " +
-                "('a1aa1c10-06db-4384-b8b2-4267bcf695d5', 'N Production', 1, 'N Production ist ein eigenständiger Zweig für Lieferanten zur Planung, Entwicklung und Produktion von Hardware.'), " +
-                "('7a137c03-f6fc-4a0b-bbed-f9849fe183d4', 'N Studios', 2, 'N Studios ist die Dachorganisation für Nachunternehmer zur Produktion von Games.');");
+                "('C47D77B2-A90F-403B-91AF-DAC47AD83372', 'Nentindo', 0, 'Nentindo ist für das Kundengeschäft verantwortlich und repräsentiert auch die Hauptorganisation.'), " +
+                "('A1AA1C10-06DB-4384-B8B2-4267BCF695D5', 'N Production', 1, 'N Production ist ein eigenständiger Zweig für Lieferanten zur Planung, Entwicklung und Produktion von Hardware.'), " +
+                "('7A137C03-F6FC-4A0B-BBED-F9849FE183D4', 'N Studios', 2, 'N Studios ist die Dachorganisation für Nachunternehmer zur Produktion von Games.');");
 
-            // Einfügen von Startdaten in die Users-Tabelle
+            // Insert seed data into Users table
             migrationBuilder.Sql("INSERT INTO Users (Id, Username, DisplayName, PasswordHash, OrganizationId) VALUES " +
-                "('EE748299-BF60-4B6E-A8B3-1C9EA329933D', 'nentindo.sensei', 'Sensei Kanri-Sha', 'AQAAAAIAAYagAAAAEOv/hlo8cXnuzWLyO5Jx6zRWek5VDzEgLcf7Jaq2DQnxTaduv4eCAm6HsiP1fKJjDg==', 'c47d77b2-a90f-403b-91af-dac47ad83372');");
+                "('EE748299-BF60-4B6E-A8B3-1C9EA329933D', 'nentindo.sensei', 'Sensei Kanri-Sha', 'AQAAAAIAAYagAAAAEOv/hlo8cXnuzWLyO5Jx6zRWek5VDzEgLcf7Jaq2DQnxTaduv4eCAm6HsiP1fKJjDg==', 'C47D77B2-A90F-403B-91AF-DAC47AD83372');");
 
-            // Einfügen von Startdaten in die UserRoles-Tabelle
+            // Insert seed data into UserRoles table
             migrationBuilder.Sql("INSERT INTO UserRoles (UserId, RoleId) VALUES " +
                 "('EE748299-BF60-4B6E-A8B3-1C9EA329933D', 'AC40C0A9-072A-4E2B-ABE0-293237BA9965');");
 
-            // Einfügen von Startdaten in die Newsletters-Tabelle
+            // Insert seed data into Newsletters table
             migrationBuilder.Sql("INSERT INTO Newsletters (Id, Title) VALUES " +
-                "('1af418dc-0e5b-4c90-a9e0-4381fb69acc6', 'Konzernweite Informationen'), " +
-                "('55621593-7a0b-4eb9-91df-240c330c0544', 'Ankündigung neuer Games'), " +
-                "('380d60fa-ff17-4e01-8995-5cf27ae394b5', 'Rabatte und Promos')," +
-                "('7ad2022c-f3b0-4468-b6dc-b9483a570d8a', 'Ankündigungen '), " +
-                "('3b9c4eeb-2948-4e30-a4e4-fc03ab9b7e83', 'Projektupdates'), " +
-                "('08f4fb4d-8845-4bf6-8a32-27b9992baaac', 'Partnerinformationen'), " +
-                "('0ff6a1f2-fc03-4eb3-8018-cf1a0ccd9ab7', 'Lieferketten Updates');");
+                "('1AF418DC-0E5B-4C90-A9E0-4381FB69ACC6', 'Konzernweite Informationen'), " +
+                "('55621593-7A0B-4EB9-91DF-240C330C0544', 'Ankündigung neuer Games'), " +
+                "('380D60FA-FF17-4E01-8995-5CF27AE394B5', 'Rabatte und Promos')," +
+                "('7AD2022C-F3B0-4468-B6DC-B9483A570D8A', 'Ankündigungen '), " +
+                "('3B9C4EEB-2948-4E30-A4E4-FC03AB9B7E83', 'Projektupdates'), " +
+                "('08F4FB4D-8845-4BF6-8A32-27B9992BAAAC', 'Partnerinformationen'), " +
+                "('0FF6A1F2-FC03-4EB3-8018-CF1A0CCD9AB7', 'Lieferketten Updates');");
 
-            // Einfügen von Startdaten in die OrganizationNewsletters-Tabelle
+            // Insert seed data into OrganizationNewsletters table
             migrationBuilder.Sql("INSERT INTO OrganizationNewsletters (NewsletterId, OrganizationId) VALUES " +
-                "('1af418dc-0e5b-4c90-a9e0-4381fb69acc6', 'c47d77b2-a90f-403b-91af-dac47ad83372'), " +
-                "('55621593-7a0b-4eb9-91df-240c330c0544', 'c47d77b2-a90f-403b-91af-dac47ad83372'), " +
-                "('380d60fa-ff17-4e01-8995-5cf27ae394b5', 'c47d77b2-a90f-403b-91af-dac47ad83372'), " +
-                "('7ad2022c-f3b0-4468-b6dc-b9483a570d8a', 'a1aa1c10-06db-4384-b8b2-4267bcf695d5'), " +
-                "('7ad2022c-f3b0-4468-b6dc-b9483a570d8a', '7a137c03-f6fc-4a0b-bbed-f9849fe183d4'), " +
-                "('3b9c4eeb-2948-4e30-a4e4-fc03ab9b7e83', 'a1aa1c10-06db-4384-b8b2-4267bcf695d5'), " +
-                "('3b9c4eeb-2948-4e30-a4e4-fc03ab9b7e83', '7a137c03-f6fc-4a0b-bbed-f9849fe183d4'), " +
-                "('08f4fb4d-8845-4bf6-8a32-27b9992baaac', '7a137c03-f6fc-4a0b-bbed-f9849fe183d4'), " +
-                "('0ff6a1f2-fc03-4eb3-8018-cf1a0ccd9ab7', 'a1aa1c10-06db-4384-b8b2-4267bcf695d5');");
+                "('1AF418DC-0E5B-4C90-A9E0-4381FB69ACC6', 'C47D77B2-A90F-403B-91AF-DAC47AD83372'), " +
+                "('55621593-7A0B-4EB9-91DF-240C330C0544', 'C47D77B2-A90F-403B-91AF-DAC47AD83372'), " +
+                "('380D60FA-FF17-4E01-8995-5CF27AE394B5', 'C47D77B2-A90F-403B-91AF-DAC47AD83372'), " +
+                "('7AD2022C-F3B0-4468-B6DC-B9483A570D8A', 'A1AA1C10-06DB-4384-B8B2-4267BCF695D5'), " +
+                "('7AD2022C-F3B0-4468-B6DC-B9483A570D8A', '7A137C03-F6FC-4A0B-BBED-F9849FE183D4'), " +
+                "('3B9C4EEB-2948-4E30-A4E4-FC03AB9B7E83', 'A1AA1C10-06DB-4384-B8B2-4267BCF695D5'), " +
+                "('3B9C4EEB-2948-4E30-A4E4-FC03AB9B7E83', '7A137C03-F6FC-4A0B-BBED-F9849FE183D4'), " +
+                "('08F4FB4D-8845-4BF6-8A32-27B9992BAAAC', '7A137C03-F6FC-4A0B-BBED-F9849FE183D4'), " +
+                "('0FF6A1F2-FC03-4EB3-8018-CF1A0CCD9AB7', 'A1AA1C10-06DB-4384-B8B2-4267BCF695D5');");
         }
 
         /// <inheritdoc />

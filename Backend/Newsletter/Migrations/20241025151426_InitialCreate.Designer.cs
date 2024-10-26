@@ -11,7 +11,7 @@ using Newsletter.Entities.Data;
 namespace Newsletter.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241018090301_InitialCreate")]
+    [Migration("20241025151426_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -37,12 +37,10 @@ namespace Newsletter.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasMaxLength(255)
+                    b.Property<Guid>("NewsletterId")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid>("NewsletterId")
+                    b.Property<Guid>("OrganizationId")
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Picture")
@@ -75,7 +73,9 @@ namespace Newsletter.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id")
-                        .HasName("PK__tmp_ms_x__3214EC07A4E01AE0");
+                        .HasName("PK__tmp_ms_x__3214EC071BAB57FB");
+
+                    b.HasIndex("OrganizationId");
 
                     b.HasIndex(new[] { "CreatedById" }, "IX_Articles_Creator");
 
@@ -445,30 +445,39 @@ namespace Newsletter.Migrations
                         .WithMany("ArticleCreatedBies")
                         .HasForeignKey("CreatedById")
                         .IsRequired()
-                        .HasConstraintName("FK__Articles__Create__0C50D423");
+                        .HasConstraintName("FK__Articles__Create__1F63A897");
 
                     b.HasOne("Newsletter.Entities.Newsletter", "Newsletter")
                         .WithMany("Articles")
                         .HasForeignKey("NewsletterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK__Articles__Newsle__0B5CAFEA");
+                        .HasConstraintName("FK__Articles__Newsle__1E6F845E");
+
+                    b.HasOne("Newsletter.Entities.Organization", "Organization")
+                        .WithMany("Articles")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__Articles__Organi__214BF109");
 
                     b.HasOne("Newsletter.Entities.User", "PublishedBy")
                         .WithMany("ArticlePublishedBies")
                         .HasForeignKey("PublishedById")
                         .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("FK__Articles__Publis__0A688BB1");
+                        .HasConstraintName("FK__Articles__Publis__1D7B6025");
 
                     b.HasOne("Newsletter.Entities.User", "UpdatedBy")
                         .WithMany("ArticleUpdatedBies")
                         .HasForeignKey("UpdatedById")
                         .IsRequired()
-                        .HasConstraintName("FK__Articles__Update__0D44F85C");
+                        .HasConstraintName("FK__Articles__Update__2057CCD0");
 
                     b.Navigation("CreatedBy");
 
                     b.Navigation("Newsletter");
+
+                    b.Navigation("Organization");
 
                     b.Navigation("PublishedBy");
 
@@ -621,6 +630,8 @@ namespace Newsletter.Migrations
 
             modelBuilder.Entity("Newsletter.Entities.Organization", b =>
                 {
+                    b.Navigation("Articles");
+
                     b.Navigation("Users");
                 });
 

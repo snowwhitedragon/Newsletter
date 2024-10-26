@@ -17,6 +17,8 @@ public partial class Article
 
     public Guid NewsletterId { get; set; }
 
+    public Guid OrganizationId { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public Guid CreatedById { get; set; }
@@ -34,6 +36,8 @@ public partial class Article
     public virtual User CreatedBy { get; set; } = null!;
 
     public virtual Newsletter Newsletter { get; set; } = null!;
+
+    public virtual Organization Organization { get; set; } = null!;
 
     public virtual User? PublishedBy { get; set; }
 

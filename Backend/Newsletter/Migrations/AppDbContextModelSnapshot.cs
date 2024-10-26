@@ -21,21 +21,24 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("CreatedById")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("NewsletterId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
+
+                    b.Property<Guid>("OrganizationId")
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<byte[]>("Picture")
                         .IsRequired()
@@ -48,7 +51,7 @@ namespace Newsletter.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("PublishedById")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("Summary")
                         .IsRequired()
@@ -64,10 +67,12 @@ namespace Newsletter.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("UpdatedById")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("Id")
-                        .HasName("PK__tmp_ms_x__3214EC07A4E01AE0");
+                        .HasName("PK__tmp_ms_x__3214EC071BAB57FB");
+
+                    b.HasIndex("OrganizationId");
 
                     b.HasIndex(new[] { "CreatedById" }, "IX_Articles_Creator");
 
@@ -84,8 +89,8 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -98,7 +103,7 @@ namespace Newsletter.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("LanguageId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -116,7 +121,7 @@ namespace Newsletter.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("StateId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("Id")
                         .HasName("PK__Contacts__3214EC07EE55F82D");
@@ -135,11 +140,11 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<Guid>("ContactId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("ReadableId")
                         .HasMaxLength(15)
@@ -160,8 +165,8 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -182,8 +187,8 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
@@ -207,8 +212,8 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -230,8 +235,8 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<string>("Language")
                         .IsRequired()
@@ -264,8 +269,8 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -282,8 +287,8 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -300,11 +305,11 @@ namespace Newsletter.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(newid())");
+                        .HasColumnType("TEXT COLLATE NOCASE")
+                        .HasDefaultValueSql("(upper(hex(randomblob(16))))");
 
                     b.Property<Guid?>("ContactId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
@@ -312,7 +317,7 @@ namespace Newsletter.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("OrganizationId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -321,7 +326,7 @@ namespace Newsletter.Migrations
                     b.Property<DateTime>("RegistratedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT")
-                        .HasDefaultValueSql("(getdate())");
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -344,10 +349,10 @@ namespace Newsletter.Migrations
             modelBuilder.Entity("OrganizationNewsletter", b =>
                 {
                     b.Property<Guid>("OrganizationId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<Guid>("NewsletterId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("OrganizationId", "NewsletterId")
                         .HasName("PK__Organiza__099116EDF2063989");
@@ -362,10 +367,10 @@ namespace Newsletter.Migrations
             modelBuilder.Entity("SubcontractorContact", b =>
                 {
                     b.Property<Guid>("SubcontractorId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<Guid>("ContactId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("SubcontractorId", "ContactId")
                         .HasName("PK__Subcontr__47CDD96A4176EC5B");
@@ -380,10 +385,10 @@ namespace Newsletter.Migrations
             modelBuilder.Entity("Subscription", b =>
                 {
                     b.Property<Guid>("ContactId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<Guid>("NewsletterId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("ContactId", "NewsletterId")
                         .HasName("PK__Subscrip__9F2C3864C76C0BCE");
@@ -398,10 +403,10 @@ namespace Newsletter.Migrations
             modelBuilder.Entity("SupplierContact", b =>
                 {
                     b.Property<Guid>("SupplierId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<Guid>("ContactId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("SupplierId", "ContactId")
                         .HasName("PK__Supplier__EE2004ED308C8D1D");
@@ -416,10 +421,10 @@ namespace Newsletter.Migrations
             modelBuilder.Entity("UserRole", b =>
                 {
                     b.Property<Guid>("UserId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.Property<Guid>("RoleId")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("TEXT COLLATE NOCASE");
 
                     b.HasKey("UserId", "RoleId")
                         .HasName("PK__UserRole__AF2760AD2783AA04");
@@ -437,30 +442,39 @@ namespace Newsletter.Migrations
                         .WithMany("ArticleCreatedBies")
                         .HasForeignKey("CreatedById")
                         .IsRequired()
-                        .HasConstraintName("FK__Articles__Create__0C50D423");
+                        .HasConstraintName("FK__Articles__Create__1F63A897");
 
                     b.HasOne("Newsletter.Entities.Newsletter", "Newsletter")
                         .WithMany("Articles")
                         .HasForeignKey("NewsletterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("FK__Articles__Newsle__0B5CAFEA");
+                        .HasConstraintName("FK__Articles__Newsle__1E6F845E");
+
+                    b.HasOne("Newsletter.Entities.Organization", "Organization")
+                        .WithMany("Articles")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__Articles__Organi__214BF109");
 
                     b.HasOne("Newsletter.Entities.User", "PublishedBy")
                         .WithMany("ArticlePublishedBies")
                         .HasForeignKey("PublishedById")
                         .OnDelete(DeleteBehavior.SetNull)
-                        .HasConstraintName("FK__Articles__Publis__0A688BB1");
+                        .HasConstraintName("FK__Articles__Publis__1D7B6025");
 
                     b.HasOne("Newsletter.Entities.User", "UpdatedBy")
                         .WithMany("ArticleUpdatedBies")
                         .HasForeignKey("UpdatedById")
                         .IsRequired()
-                        .HasConstraintName("FK__Articles__Update__0D44F85C");
+                        .HasConstraintName("FK__Articles__Update__2057CCD0");
 
                     b.Navigation("CreatedBy");
 
                     b.Navigation("Newsletter");
+
+                    b.Navigation("Organization");
 
                     b.Navigation("PublishedBy");
 
@@ -613,6 +627,8 @@ namespace Newsletter.Migrations
 
             modelBuilder.Entity("Newsletter.Entities.Organization", b =>
                 {
+                    b.Navigation("Articles");
+
                     b.Navigation("Users");
                 });
 

@@ -19,7 +19,6 @@ namespace Newsletter.Controllers {
 
         [Authorize( Roles = $"{Roles.Employee},{Roles.Admin}")]
         public override Task<IActionResult> Create([FromBody] ArticleData value) {
-            // TODO
             return base.Create(value);
         }
 
